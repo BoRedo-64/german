@@ -62,7 +62,7 @@ export default function AdminLayout({
   const navItems = [
     {
       label: 'إضافة تمرين',
-      href: '/admin/exercises/add',
+      href: '/admin/exercises',
       key: 'exercises',
     },
     {
@@ -91,9 +91,11 @@ export default function AdminLayout({
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-sidebar-primary">
-              لوحة التحكم
-            </h2>
+            <img
+              src="/german.png"
+              alt="German Logo"
+              className="h-20 w-auto mr-5"
+            />
             <button
               onClick={() => setSidebarOpen(false)}
               className="md:hidden text-sidebar-foreground hover:text-sidebar-accent"
@@ -107,7 +109,7 @@ export default function AdminLayout({
             {navItems.map((item) => (
               <Link key={item.key} href={item.href}>
                 <button
-                  onClick={() => setSidebarOpen(false)}
+                  //onClick={() => setSidebarOpen(false)}
                   className={`w-full text-right px-4 py-3 rounded-lg transition-colors ${
                     isActive(item.key)
                       ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'

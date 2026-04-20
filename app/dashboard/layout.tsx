@@ -96,9 +96,11 @@ export default function DashboardLayout({
         <div className="flex flex-col h-full p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-sidebar-primary">
-              اللغة الألمانية
-            </h2>
+            <img
+              src="/german.png"
+              alt="German Logo"
+              className="h-20 w-auto mr-5"
+            />
             <button
               onClick={() => setSidebarOpen(false)}
               className="md:hidden text-sidebar-foreground hover:text-sidebar-accent"

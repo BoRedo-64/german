@@ -9,7 +9,11 @@ export default function Home() {
       {/* Navbar */}
       <nav className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold text-accent">اللغة الألمانية</div>
+          <img
+            src="/german.png"
+            alt="German Logo"
+            className="h-15 w-auto"
+          />
           <Link href="/login">
             <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
               دخول

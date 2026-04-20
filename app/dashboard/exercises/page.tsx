@@ -11,8 +11,6 @@ const LEVELS = [
   { id: 'A2', label: 'A2 - المستوى الابتدائي' },
   { id: 'B1', label: 'B1 - المستوى المتوسط' },
   { id: 'B2', label: 'B2 - المستوى المتوسط المتقدم' },
-  { id: 'C1', label: 'C1 - المستوى المتقدم' },
-  { id: 'C2', label: 'C2 - المستوى المتقدم جداً' },
 ];
 
 export default function ExercisesPage() {
@@ -61,9 +59,9 @@ export default function ExercisesPage() {
 
       {/* Levels Grid */}
       {selectedLevel === null ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {LEVELS.map((level) => (
-            <button
+            <div
               key={level.id}
               onClick={() => setSelectedLevel(level.id)}
               className="text-right"
@@ -84,7 +82,7 @@ export default function ExercisesPage() {
                   </Button>
                 </CardContent>
               </Card>
-            </button>
+            </div>
           ))}
         </div>
       ) : (
