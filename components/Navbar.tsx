@@ -38,6 +38,7 @@ export function Navbar({ language = 'en', onLanguageChange }: NavbarProps) {
 
           {/* Right section: Language selector and Login */}
           <div className="flex items-center gap-3">
+            {/* Language Dropdown */}
 
             {/* Login Button */}
             <Link href="/login">
