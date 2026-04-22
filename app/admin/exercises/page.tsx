@@ -1,188 +1,166 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { AdminSidebar } from '@/components/AdminSidebar'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { t } from '@/lib/i18n'
+
+type Language = 'en' | 'fr' | 'ar'
 
 export default function AddExercisePage() {
+  const [language, setLanguage] = useState<Language>('en')
   const [formData, setFormData] = useState({
     title: '',
     level: 'A1',
     type: 'quiz',
-    description: '',
     content: '',
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  })
+  const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ title: '', level: 'A1', type: 'quiz', description: '', content: '' });
-    }, 3000);
-  };
+    e.preventDefault()
+    setSubmitted(true)
+    setTimeout(() => setSubmitted(false), 3000)
+    setFormData({ title: '', level: 'A1', type: 'quiz', content: '' })
+  }
 
   return (
-    <div className="max-w-2xl space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold mb-2">إضافة تمرين جديد</h1>
-        <p className="text-muted-foreground text-lg">أنشئ تمرين جديد للطلاب</p>
-      </div>
+    <div className="flex h-screen bg-background">
+      <AdminSidebar language={language} />
 
-      {/* Success Message */}
-      {submitted && (
-        <Card className="border-green-500/50 bg-green-500/10">
-          <CardContent className="pt-6">
-            <p className="text-green-400">تم إضافة التمرين بنجاح!</p>
-          </CardContent>
-        </Card>
-      )}
+      <main className="flex-1 overflow-y-auto">
+        {/* Header */}
+        <div className="bg-white border-b border-border sticky top-0 z-10">
+          <div className="max-w-2xl mx-auto px-6 py-6 flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">
+              {t('addExercise', language)}
+            </h1>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className="px-3 py-2 rounded-lg border border-border bg-background text-foreground"
+            >
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
+        </div>
 
-      {/* Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>بيانات التمرين</CardTitle>
-          <CardDescription>أملأ جميع الحقول المطلوبة</CardDescription>
-        </CardHeader>
-        <CardContent>
+        <div className="max-w-2xl mx-auto px-6 py-8">
+          {/* Success Message */}
+          {submitted && (
+            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-800 rounded-lg">
+              ✅ Exercise added successfully!
+            </div>
+          )}
+
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
-            <div className="space-y-2">
-              <label htmlFor="title" className="block text-sm font-medium">
-                اسم التمرين <span className="text-red-500">*</span>
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-2">
+                Exercise Title
               </label>
-              <input
+              <Input
                 type="text"
-                id="title"
-                name="title"
+                placeholder="Enter exercise title"
                 value={formData.title}
-                onChange={handleChange}
-                placeholder="مثال: تعلم الأرقام"
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 required
-                className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full"
               />
             </div>
 
-            {/* Level */}
-            <div className="space-y-2">
-              <label htmlFor="level" className="block text-sm font-medium">
-                المستوى <span className="text-red-500">*</span>
+            {/* Level Select */}
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-2">
+                Level
               </label>
-              <select
-                id="level"
-                name="level"
-                value={formData.level}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-              >
-                <option value="A1">A1 - المستوى الأساسي</option>
-                <option value="A2">A2 - المستوى الابتدائي</option>
-                <option value="B1">B1 - المستوى المتوسط</option>
-                <option value="B2">B2 - المستوى المتوسط المتقدم</option>
-                <option value="C1">C1 - المستوى المتقدم</option>
-                <option value="C2">C2 - المستوى المتقدم جداً</option>
-              </select>
+              <Select value={formData.level} onValueChange={(value) =>
+                setFormData({ ...formData, level: value })
+              }>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A1">A1 - Beginner</SelectItem>
+                  <SelectItem value="A2">A2 - Elementary</SelectItem>
+                  <SelectItem value="B1">B1 - Intermediate</SelectItem>
+                  <SelectItem value="B2">B2 - Upper Intermediate</SelectItem>
+                  <SelectItem value="C1">C1 - Advanced</SelectItem>
+                  <SelectItem value="C2">C2 - Mastery</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            {/* Type */}
-            <div className="space-y-2">
-              <label htmlFor="type" className="block text-sm font-medium">
-                نوع التمرين <span className="text-red-500">*</span>
+            {/* Type Select */}
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-2">
+                Exercise Type
               </label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-              >
-                <option value="quiz">اختبار تفاعلي</option>
-                <option value="pdf">ملف PDF</option>
-                <option value="video">فيديو تعليمي</option>
-              </select>
+              <Select value={formData.type} onValueChange={(value) =>
+                setFormData({ ...formData, type: value })
+              }>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="quiz">❓ Quiz</SelectItem>
+                  <SelectItem value="listening">🎧 Listening</SelectItem>
+                  <SelectItem value="writing">✍️ Writing</SelectItem>
+                  <SelectItem value="speaking">🗣️ Speaking</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-              <label htmlFor="description" className="block text-sm font-medium">
-                الوصف <span className="text-red-500">*</span>
+            {/* Content Textarea */}
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-2">
+                Content
               </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="أوضح ماذا سيتعلم الطالب من هذا التمرين"
-                required
-                rows={3}
-                className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-              />
-            </div>
-
-            {/* Content */}
-            <div className="space-y-2">
-              <label htmlFor="content" className="block text-sm font-medium">
-                محتوى التمرين <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="content"
-                name="content"
+              <Textarea
+                placeholder="Enter exercise content, questions, or instructions"
                 value={formData.content}
-                onChange={handleChange}
-                placeholder="أدخل محتوى التمرين هنا..."
+                onChange={(e) =>
+                  setFormData({ ...formData, content: e.target.value })
+                }
                 required
-                rows={5}
-                className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                className="w-full min-h-32"
               />
             </div>
 
-            {/* Buttons */}
-            <div className="flex gap-4 pt-4">
+            {/* Submit Button */}
+            <div className="flex gap-3">
               <Button
                 type="submit"
-                className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 rounded-lg font-semibold"
               >
-                إضافة التمرين
+                {t('submit', language)}
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 border-accent/30"
-                onClick={() =>
-                  setFormData({ title: '', level: 'A1', type: 'quiz', description: '', content: '' })
-                }
+                className="px-8 rounded-lg"
+                onClick={() => setFormData({ title: '', level: 'A1', type: 'quiz', content: '' })}
               >
-                إلغاء
+                Clear
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
-
-      {/* Help Section */}
-      <Card className="bg-card/30">
-        <CardHeader>
-          <CardTitle className="text-lg">نصائح مفيدة</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p>• اختر عنواناً واضحاً وجذاباً للتمرين</p>
-          <p>• تأكد من أن مستوى التمرين مناسب للمتعلمين</p>
-          <p>• اكتب وصفاً شاملاً للتمرين لمساعدة الطلاب على فهم الهدف</p>
-          <p>• تأكد من صحة المحتوى والنصوص قبل النشر</p>
-        </CardContent>
-      </Card>
+        </div>
+      </main>
     </div>
-  );
+  )
 }

@@ -1,134 +1,152 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { BookOpen } from 'lucide-react';
+import { useEffect, useState } from 'react'
+import { DashboardSidebar } from '@/components/DashboardSidebar'
+import { supabase } from '@/lib/supabaseClient'
+import { Button } from '@/components/ui/button'
+import { t } from '@/lib/i18n'
 
-const LEVELS = [
-  { id: 'A1', label: 'A1 - المستوى الأساسي' },
-  { id: 'A2', label: 'A2 - المستوى الابتدائي' },
-  { id: 'B1', label: 'B1 - المستوى المتوسط' },
-  { id: 'B2', label: 'B2 - المستوى المتوسط المتقدم' },
-];
+type Language = 'en' | 'fr' | 'ar'
 
 export default function ExercisesPage() {
-  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [language, setLanguage] = useState<Language>('en')
 
-  const mockExercises = {
-    A1: [
-      { id: 1, title: 'التحية والتعريف', type: 'quiz', description: 'تعلم طرق التحية والتعريف عن نفسك' },
-      { id: 2, title: 'الأرقام والألوان', type: 'pdf', description: 'قائمة شاملة بالأرقام والألوان بالألمانية' },
-      { id: 3, title: 'الأطعمة الشائعة', type: 'quiz', description: 'اختبر معرفتك بأسماء الأطعمة' },
-    ],
-    A2: [
-      { id: 4, title: 'الماضي البسيط', type: 'quiz', description: 'تعلم الأفعال في الماضي البسيط' },
-      { id: 5, title: 'الهوايات', type: 'pdf', description: 'كيفية التحدث عن هواياتك المفضلة' },
-      { id: 6, title: 'الحياة اليومية', type: 'quiz', description: 'اختبر معرفتك بمفردات الحياة اليومية' },
-    ],
-    B1: [
-      { id: 7, title: 'الشروط والافتراضات', type: 'quiz', description: 'تعلم الجمل الشرطية' },
-      { id: 8, title: 'القراءة المتقدمة', type: 'pdf', description: 'نصوص متوسطة للقراءة والفهم' },
-      { id: 9, title: 'الحوار المتقدم', type: 'quiz', description: 'تمارين على الحوار المتقدم' },
-    ],
-    B2: [
-      { id: 10, title: 'الأدب الألماني', type: 'pdf', description: 'مقتطفات من أدب ألماني معروف' },
-      { id: 11, title: 'المقالات الاقتصادية', type: 'quiz', description: 'فهم المقالات الاقتصادية' },
-      { id: 12, title: 'النقاش المتقدم', type: 'quiz', description: 'تمارين على النقاش المعقد' },
-    ],
-    C1: [
-      { id: 13, title: 'الفلسفة والأفكار', type: 'pdf', description: 'نقاش الأفكار الفلسفية بالألمانية' },
-      { id: 14, title: 'التحليل النقدي', type: 'quiz', description: 'تحليل وانتقاد النصوص' },
-      { id: 15, title: 'الخطابة والعرض', type: 'quiz', description: 'فنون الخطابة والعرض الشفهي' },
-    ],
-    C2: [
-      { id: 16, title: 'الدراسات العليا', type: 'pdf', description: 'نصوص أكاديمية متقدمة جداً' },
-      { id: 17, title: 'البحث العلمي', type: 'quiz', description: 'كتابة وفهم البحث العلمي' },
-      { id: 18, title: 'الترجمة المتقدمة', type: 'quiz', description: 'تمارين على الترجمة الدقيقة' },
-    ],
-  };
+  const [loading, setLoading] = useState(true)
+  const [level, setLevel] = useState<string>('A1')
+  const [exercises, setExercises] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: userData } = await supabase.auth.getUser()
+      const user = userData.user
+
+      if (!user) return
+
+      // 🔥 GET USER LEVEL
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('level')
+        .eq('id', user.id)
+        .single()
+
+      const userLevel = profile?.level || 'A1'
+      setLevel(userLevel)
+
+      // 🔥 GET EXERCISES FOR THAT LEVEL
+      const { data: ex } = await supabase
+        .from('exercises')
+        .select('*')
+        .eq('level', userLevel)
+
+      setExercises(ex || [])
+      setLoading(false)
+    }
+
+    fetchData()
+  }, [])
+
+  // 🔥 GROUP BY TYPE
+  const quizzes = exercises.filter(e => e.type === 'quiz')
+  const pdfs = exercises.filter(e => e.type === 'pdf')
+  const audio = exercises.filter(e => e.type === 'audio')
+
+  if (loading) {
+    return <div className="p-10">Loading...</div>
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold mb-2 text-balance">التمارين</h1>
-        <p className="text-muted-foreground text-lg">اختر المستوى التعليمي وابدأ التعلم</p>
-      </div>
+    <div className="flex h-screen bg-background">
+      <DashboardSidebar language={language} />
 
-      {/* Levels Grid */}
-      {selectedLevel === null ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          {LEVELS.map((level) => (
-            <div
-              key={level.id}
-              onClick={() => setSelectedLevel(level.id)}
-              className="text-right"
+      <main className="flex-1 overflow-y-auto">
+
+        {/* Header */}
+        <div className="bg-white border-b border-border sticky top-0 z-10">
+          <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">
+              {t('exercises', language)} ({level})
+            </h1>
+
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className="px-3 py-2 rounded-lg border border-border bg-background"
             >
-              <Card className="cursor-pointer transition-all hover:border-accent/50 hover:shadow-lg hover:bg-card/80">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-2xl font-bold text-accent">{level.id}</CardTitle>
-                      <CardDescription className="mt-2">{level.label}</CardDescription>
-                    </div>
-                    <BookOpen className="text-accent/50 w-8 h-8" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full border-accent/30 hover:bg-accent/10">
-                    اختر المستوى
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
         </div>
-      ) : (
-        <>
-          {/* Back Button */}
-          <div className="flex items-center gap-4 mb-4">
-            <button
-              onClick={() => setSelectedLevel(null)}
-              className="text-accent hover:text-accent/80 transition-colors font-semibold"
-            >
-              ← العودة
-            </button>
-            <h2 className="text-3xl font-bold">
-              مستوى {selectedLevel}
-            </h2>
-          </div>
 
-          {/* Exercises List */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockExercises[selectedLevel as keyof typeof mockExercises].map((exercise) => (
-              <Card key={exercise.id} className="hover:border-accent/50 transition-all hover:shadow-lg">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{exercise.title}</CardTitle>
-                      <CardDescription className="mt-2 text-balance">
-                        {exercise.description}
-                      </CardDescription>
-                    </div>
-                    <div className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent font-semibold whitespace-nowrap mr-2">
-                      {exercise.type === 'quiz' ? 'اختبار' : 'ملف'}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Link href={`/dashboard/exercises/${selectedLevel}/${exercise.id}`}>
-                    <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
-                      {exercise.type === 'quiz' ? 'ابدأ الاختبار' : 'تحميل الملف'}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+        <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
+
+          {/* 🧠 QUIZZES */}
+          <Section title="🧠 Quizzes">
+            {quizzes.map((q) => (
+              <Card
+                key={q.id}
+                title={q.title}
+                onClick={() => window.location.href = `/dashboard/quiz/${q.id}`}
+              />
             ))}
-          </div>
-        </>
-      )}
+          </Section>
+
+          {/* 📄 PDFs */}
+          <Section title="📄 PDFs">
+            {pdfs.map((p) => (
+              <Card
+                key={p.id}
+                title={p.title}
+                onClick={() => window.open(p.file_url, '_blank')}
+              />
+            ))}
+          </Section>
+
+          {/* 🎧 AUDIO */}
+          <Section title="🎧 Audio Lessons">
+            {audio.map((a) => (
+              <Card
+                key={a.id}
+                title={a.title}
+                onClick={() => window.open(a.file_url, '_blank')}
+              />
+            ))}
+          </Section>
+
+          {/* EMPTY */}
+          {exercises.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground">
+                No exercises for your level yet
+              </p>
+            </div>
+          )}
+
+        </div>
+      </main>
     </div>
-  );
+  )
+}
+
+function Section({ title, children }: any) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold">{title}</h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Card({ title, onClick }: any) {
+  return (
+    <div
+      onClick={onClick}
+      className="cursor-pointer bg-card p-6 rounded-xl border border-border hover:shadow-md transition"
+    >
+      <h3 className="font-semibold text-lg">{title}</h3>
+    </div>
+  )
 }

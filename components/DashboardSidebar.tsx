@@ -1,0 +1,120 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabaseClient'
+import { t } from '@/lib/i18n'
+
+type Language = 'en' | 'fr' | 'ar'
+
+interface DashboardSidebarProps {
+  language?: Language
+}
+
+export function DashboardSidebar({ language = 'en' }: DashboardSidebarProps) {
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const [name, setName] = useState<string>('Loading...')
+  const [level, setLevel] = useState<string>('')
+
+  const menuItems = [
+    { key: 'exercises', href: '/dashboard/exercises', icon: '📝' },
+    { key: 'statistics', href: '/dashboard/statistics', icon: '📊' },
+    { key: 'joinSession', href: '/dashboard/meetings', icon: '🎤' },
+  ]
+
+  const isActive = (href: string) => pathname === href
+
+  // 🔐 FETCH PROFILE
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data } = await supabase.auth.getUser()
+      const user = data.user
+
+      if (!user) return
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, level')
+        .eq('id', user.id)
+        .single()
+
+      if (profile) {
+        setName(`${profile.first_name} ${profile.last_name}`)
+        setLevel(profile.level || '')
+      }
+    }
+
+    fetchProfile()
+  }, [])
+
+  // 🚪 LOGOUT FUNCTION
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.replace('/login')
+  }
+
+  return (
+    <aside className="w-64 bg-card border-r border-border flex flex-col sticky top-0 h-screen">
+      
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2 p-3 border-b border-border hover:bg-secondary transition-colors">
+        <img src="/german.png" alt="German Logo" className="h-15 w-auto ml-12" />
+      </Link>
+
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+        <h3 className="text-xs font-bold text-muted-foreground uppercase px-4 py-2">
+          Learning
+        </h3>
+
+        {menuItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              isActive(item.href)
+                ? 'bg-primary text-white shadow-md'
+                : 'text-foreground hover:bg-secondary'
+            }`}
+          >
+            <span className="text-xl">{item.icon}</span>
+            <span className="font-medium text-sm">
+              {t(item.key as any, language)}
+            </span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* Profile */}
+      <Link href="/dashboard/profile" className="p-4 border-t border-border block">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 text-center hover:opacity-90 transition">
+          <div className="text-3xl mb-2">👤</div>
+
+          <p className="text-sm font-semibold text-foreground">
+            {name}
+          </p>
+
+          {level && (
+            <p className="text-xs text-muted-foreground">
+              Level {level}
+            </p>
+          )}
+        </div>
+      </Link>
+
+      {/* 🔴 LOGOUT BUTTON */}
+      <div className="p-4 border-t border-border">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium text-sm"
+        >
+          {t('Logout', language) || 'Logout'}
+        </button>
+      </div>
+
+    </aside>
+  )
+}

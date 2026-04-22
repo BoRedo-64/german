@@ -6,9 +6,14 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata: Metadata = {
-  title: 'منصة تعلم اللغة الألمانية',
-  description: 'منصة حديثة لتعلم اللغة الألمانية',
+  title: 'Deutschly - Learn German Easily',
+  description: 'Learn German with interactive lessons, exercises, and community. Master German at your own pace with our Duolingo-inspired platform.',
   generator: 'yahya',
   icons: {
     icon: [
@@ -35,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ar" dir="rtl" className="dark bg-background">
+    <html lang="en" className="bg-background">
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
