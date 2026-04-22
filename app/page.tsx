@@ -22,7 +22,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-[center_top] md:bg-center"
+          className="absolute inset-0 bg-cover bg-[center_left] md:bg-center"
           style={{
             backgroundImage: `url(${language === "ar" ? "/hero-inv.jpg" : "/hero.jpg"})`,
           }}
