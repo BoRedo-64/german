@@ -204,29 +204,6 @@ export default function StatisticsPage() {
               </ResponsiveContainer>
             </div>
 
-            {/* Bar */}
-            <div className="bg-card rounded-xl p-6 shadow-soft border border-border">
-              <h3 className="text-lg font-bold mb-4">
-                Daily Activity
-              </h3>
-
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-
-                  <Bar
-                    dataKey="lessons"
-                    fill="#f59e0b"
-                    name="Lessons"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
           </div>
         </div>
       </main>
