@@ -39,6 +39,28 @@ export function Navbar({ language = 'en', onLanguageChange }: NavbarProps) {
           {/* Right section: Language selector and Login */}
           <div className="flex items-center gap-3">
             {/* Language Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="lg" className="gap-2">
+                  <span>{languages.find((l) => l.code === language)?.flag}</span>
+                  <span className="hidden sm:inline">
+                    {languages.find((l) => l.code === language)?.name}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => onLanguageChange?.(lang.code)}
+                    className="cursor-pointer"
+                  >
+                    <span className="mr-2">{lang.flag}</span>
+                    {lang.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Login Button */}
             <Link href="/login">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabaseClient'
+import { Video, Calendar } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -19,7 +20,6 @@ export default function MeetingsPage() {
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 🔥 FETCH REAL DATA
   useEffect(() => {
     const fetchMeetings = async () => {
       const { data: userData } = await supabase.auth.getUser()
@@ -27,7 +27,6 @@ export default function MeetingsPage() {
 
       if (!user) return
 
-      // get meetings through participants table
       const { data, error } = await supabase
         .from('meeting_participants')
         .select(`
@@ -40,11 +39,8 @@ export default function MeetingsPage() {
         `)
         .eq('user_id', user.id)
 
-      if (error) {
-        console.error(error)
-      }
+      if (error) console.error(error)
 
-      // flatten data
       const formatted =
         data?.map((item: any) => item.meeting).filter(Boolean) || []
 
@@ -94,46 +90,53 @@ export default function MeetingsPage() {
               {meetings.map((meeting) => (
                 <div
                   key={meeting.id}
-                  className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-border hover:shadow-md transition-all"
+                  className="bg-gradient-to-r from-blue-500 to-blue-50 text-white rounded-xl p-5 shadow hover:shadow-md transition flex items-center justify-between gap-4"
                 >
-                  <div className="flex items-start justify-between gap-6">
-                    
-                    {/* LEFT */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-2xl">🎤</span>
-                        <h3 className="text-2xl font-bold text-foreground">
-                          {meeting.title}
-                        </h3>
-                      </div>
+                  {/* LEFT */}
+                  <div className="flex items-center gap-4">
+
+                    {/* ICON */}
+                    <div>
+                      <Video className="w-10 h-10 mr-5 ml-5" />
+                    </div>
+
+                    {/* TEXT */}
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        {meeting.title}
+                      </h3>
 
                       {meeting.scheduled_at && (
-                        <p className="text-sm text-muted-foreground">
-                          📅 {new Date(meeting.scheduled_at).toLocaleString()}
-                        </p>
+                        <div className="flex items-center gap-2 text-sm text-white/80 mt-1">
+                          <Calendar className="w-4 h-4" />
+                          <span>
+                            {new Date(meeting.scheduled_at).toLocaleString()}
+                          </span>
+                        </div>
                       )}
                     </div>
-
-                    {/* RIGHT */}
-                    <div className="flex flex-col gap-3">
-                      <Button
-                        className="bg-primary hover:bg-primary/90 text-white rounded-lg px-6"
-                        onClick={() =>
-                          window.open(meeting.meeting_link, '_blank')
-                        }
-                      >
-                        Join Now →
-                      </Button>
-                    </div>
-
                   </div>
+
+                  {/* RIGHT */}
+                  <Button
+                    className="bg-white/1 text-lg text-blue-500 hover:bg-white/1 cursor-pointer rounded-lg px-5 font-semibold"
+                    onClick={() =>
+                      window.open(meeting.meeting_link, '_blank')
+                    }
+                  >
+                    Join →
+                  </Button>
                 </div>
               ))}
 
               {/* EMPTY STATE */}
               {meetings.length === 0 && (
                 <div className="text-center py-16">
-                  <div className="text-6xl mb-4">📅</div>
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-muted p-4 rounded-full">
+                      <Calendar className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                  </div>
                   <p className="text-muted-foreground text-lg">
                     No meetings assigned to you yet
                   </p>

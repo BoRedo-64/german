@@ -5,6 +5,8 @@ import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/button'
 import { t } from '@/lib/i18n'
+import Link from 'next/link'
+import { Brain, FileText, Headphones } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -82,35 +84,54 @@ export default function ExercisesPage() {
         <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
 
           {/* 🧠 QUIZZES */}
-          <Section title="🧠 Quizzes">
+          <Section>
             {quizzes.map((q) => (
-              <Card
-                key={q.id}
-                title={q.title}
-                onClick={() => window.location.href = `/dashboard/quiz/${q.id}`}
-              />
+              <Link key={q.id} href={`/dashboard/quiz/${q.id}`}>
+                <div className="bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl p-4 text-white shadow flex items-center gap-3 hover:scale-[1.02] transition">
+                  
+                  <div>
+                    <Brain className="w-6 h-6" />
+                  </div>
+
+                  <h3 className="font-semibold text-lg">{q.title}</h3>
+                </div>
+              </Link>
             ))}
           </Section>
 
           {/* 📄 PDFs */}
-          <Section title="📄 PDFs">
+          <Section>
             {pdfs.map((p) => (
-              <Card
+              <div
                 key={p.id}
-                title={p.title}
                 onClick={() => window.open(p.file_url, '_blank')}
-              />
+                className="bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl p-4 text-white shadow flex items-center gap-3 hover:scale-[1.02] transition cursor-pointer"
+              >
+                
+                <div>
+                  <FileText className="w-6 h-6" />
+                </div>
+
+                <h3 className="font-semibold text-lg">{p.title}</h3>
+              </div>
             ))}
           </Section>
 
           {/* 🎧 AUDIO */}
-          <Section title="🎧 Audio Lessons">
+          <Section>
             {audio.map((a) => (
-              <Card
+              <div
                 key={a.id}
-                title={a.title}
                 onClick={() => window.open(a.file_url, '_blank')}
-              />
+                className="bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl p-4 text-white shadow flex items-center gap-3 hover:scale-[1.02] transition cursor-pointer"
+              >
+                
+                <div>
+                  <Headphones className="w-6 h-6" />
+                </div>
+
+                <h3 className="font-semibold text-lg">{a.title}</h3>
+              </div>
             ))}
           </Section>
 

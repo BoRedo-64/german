@@ -3,11 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Navbar } from '@/components/Navbar'
-import { CourseCard } from '@/components/CourseCard'
-import { ProgressCard, StatCard, ExerciseCard } from '@/components/StatsCard'
 import { Button } from '@/components/ui/button'
 import { t } from '@/lib/i18n'
-import { mockCourses, mockExercises, currentUser } from '@/lib/mockData'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -29,7 +26,6 @@ export default function Home() {
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-1 py-16 sm:py-24">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Text Content */}
             <div className="space-y-6">
               <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
                 {t('hero.title', language)}
@@ -47,142 +43,87 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Us / Value Section */}
+      {/* Why Section */}
       <section className="py-20 px-4 md:px-6 bg-muted/30">
         <div className="max-w-6xl mx-auto space-y-12">
 
           {/* Title */}
           <div className="text-center space-y-2">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Why choose Deutschly?
+              {t('why.title', language)}
             </h2>
             <p className="text-muted-foreground">
-              Everything you need to go from Hallo to fluency
+              {t('why.subtitle', language)}
             </p>
           </div>
 
-          {/* TOP 3 CARDS */}
+          {/* TOP 3 */}
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl shadow-sm border overflow-hidden text-center">
-              <img
-                src="/book-icon.jpg"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6 space-y-4">
-                <h3 className="font-semibold text-lg">Interactive lessons</h3>
-                <p className="text-sm text-muted-foreground">
-                  Smart exercises adapted to your pace every day
-                </p>
-                <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
-                  No boredom
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border overflow-hidden text-center">
-              <img
-                src="/list.jpg"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6 space-y-4">
-                <h3 className="font-semibold text-lg">Real-time progress</h3>
-                <p className="text-sm text-muted-foreground">
-                  Monitor streaks, correct answers and your level
-                </p>
-                <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
-                  Daily streaks 🔥
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border overflow-hidden text-center">
-              <img
-                src="/sound.jpg"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6 space-y-4">
-                <h3 className="font-semibold text-lg">Listen & speak</h3>
-                <p className="text-sm text-muted-foreground">
-                  Audio lessons with real German conversations
-                </p>
-                <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
-                  Native audio
-                </span>
-              </div>
-            </div>
-
+            <Card
+              img="/book-icon.jpg"
+              title={t('why.card1.title', language)}
+              desc={t('why.card1.desc', language)}
+              tag={t('why.card1.tag', language)}
+            />
+            <Card
+              img="/list.jpg"
+              title={t('why.card2.title', language)}
+              desc={t('why.card2.desc', language)}
+              tag={t('why.card2.tag', language)}
+            />
+            <Card
+              img="/sound.jpg"
+              title={t('why.card3.title', language)}
+              desc={t('why.card3.desc', language)}
+              tag={t('why.card3.tag', language)}
+            />
           </div>
 
-          {/* BOTTOM 2 CARDS */}
+          {/* BOTTOM */}
           <div className="grid md:grid-cols-2 gap-6">
-
-            {/* Flashcards */}
-            <div className="bg-white rounded-2xl overflow-hidden flex items-center">
-              <img
-                src="/cards.jpg"
-                className="w-40 h-full object-cover"
-              />
-              <div className="p-6">
-                <h3 className="font-semibold text-lg">Smart flashcards</h3>
-                <p className="text-sm text-muted-foreground">
-                  Spaced-repetition vocab so words actually stick
-                </p>
-                <span className="text-xs text-blue-600">
-                  500+ word sets
-                </span>
-              </div>
-            </div>
-
-            {/* Grammar */}
-            <div className="bg-white rounded-2xl overflow-hidden flex items-center">
-              <img
-                src="/book.jpg"
-                className="w-40 h-full object-cover"
-              />
-              <div className="p-6">
-                <h3 className="font-semibold text-lg">Clear grammar rules</h3>
-                <p className="text-sm text-muted-foreground">
-                  Visual breakdowns of German structure & cases
-                </p>
-                <span className="text-xs text-blue-600">
-                  A1 → B2 levels
-                </span>
-              </div>
-            </div>
-
+            <WideCard
+              img="/cards.jpg"
+              title={t('why.flashcards.title', language)}
+              desc={t('why.flashcards.desc', language)}
+              tag={t('why.flashcards.tag', language)}
+            />
+            <WideCard
+              img="/book.jpg"
+              title={t('why.grammar.title', language)}
+              desc={t('why.grammar.desc', language)}
+              tag={t('why.grammar.tag', language)}
+            />
           </div>
 
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="relative overflow-hidden py-10 sm:py-12">
         <div className="absolute inset-0 bg-gray-100" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            
-            {/* TEXT (LEFT) */}
+
             <div className="space-y-6 text-left">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-                {t('readyToPractice', language)}
+                {t('cta.title', language)}
               </h2>
 
               <p className="text-lg text-muted-foreground">
-                Challenge yourself with our interactive quizzes and exercises
+                {t('cta.desc', language)}
               </p>
 
               <Link href="/dashboard/exercises">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-xl font-semibold">
-                  {t('launchQuiz', language)} →
+                  {t('cta.button', language)} →
                 </Button>
               </Link>
             </div>
 
-            {/* IMAGE (RIGHT) */}
             <div className="flex justify-center md:justify-end">
               <img
                 src="/pretsel.png"
-                alt="Practice Illustration"
+                alt="practice"
                 className="w-full max-w-md"
               />
             </div>
@@ -195,40 +136,93 @@ export default function Home() {
       <footer className="bg-card border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h4 className="font-bold text-foreground mb-4">{t('courses', language)}</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#" className="hover:text-foreground transition">Basics</Link></li>
-                <li><Link href="#" className="hover:text-foreground transition">Advanced</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-foreground mb-4">{t('exercises', language)}</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#" className="hover:text-foreground transition">Quiz</Link></li>
-                <li><Link href="#" className="hover:text-foreground transition">Practice</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-foreground mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#" className="hover:text-foreground transition">Blog</Link></li>
-                <li><Link href="#" className="hover:text-foreground transition">Help</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-foreground mb-4">Community</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#" className="hover:text-foreground transition">Forum</Link></li>
-                <li><Link href="#" className="hover:text-foreground transition">Events</Link></li>
-              </ul>
-            </div>
+
+            <FooterCol
+              title={t('footer.courses', language)}
+              links={[
+                t('footer.basics', language),
+                t('footer.advanced', language),
+              ]}
+            />
+
+            <FooterCol
+              title={t('footer.exercises', language)}
+              links={[
+                t('footer.quiz', language),
+                t('footer.practice', language),
+              ]}
+            />
+
+            <FooterCol
+              title={t('footer.resources', language)}
+              links={[
+                t('footer.blog', language),
+                t('footer.help', language),
+              ]}
+            />
+
+            <FooterCol
+              title={t('footer.community', language)}
+              links={[
+                t('footer.forum', language),
+                t('footer.events', language),
+              ]}
+            />
+
           </div>
+
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Deutschly. {t('tagline', language)}</p>
+            <p>&copy; 2026 Deutschly. {t('footer.tagline', language)}</p>
           </div>
         </div>
       </footer>
+    </div>
+  )
+}
+
+/* COMPONENTS */
+
+function Card({ img, title, desc, tag }: any) {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border overflow-hidden text-center">
+      <img src={img} className="w-full h-40 object-cover" />
+      <div className="p-6 space-y-4">
+        <h3 className="font-semibold text-lg">{title}</h3>
+        <p className="text-sm text-muted-foreground">{desc}</p>
+        <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
+          {tag}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+function WideCard({ img, title, desc, tag }: any) {
+  return (
+    <div className="bg-white rounded-2xl overflow-hidden flex items-center">
+      <img src={img} className="w-40 h-full object-cover" />
+      <div className="p-6">
+        <h3 className="font-semibold text-lg">{title}</h3>
+        <p className="text-sm text-muted-foreground">{desc}</p>
+        <span className="text-xs text-blue-600">{tag}</span>
+      </div>
+    </div>
+  )
+}
+
+function FooterCol({ title, links }: any) {
+  return (
+    <div>
+      <h4 className="font-bold text-foreground mb-4">{title}</h4>
+      <ul className="space-y-2 text-sm text-muted-foreground">
+        {links.map((l: string, i: number) => (
+          <li key={i}>
+            <Link href="#" className="hover:text-foreground transition">
+              {l}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

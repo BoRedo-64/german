@@ -87,7 +87,7 @@ export function QuizCard({ questions, onComplete }: QuizCardProps) {
       {/* Question Card */}
       <div
         className={`bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-2xl p-8 transition-all duration-300 ${
-          isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-50'
+          isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-100'
         }`}
       >
         <div className="space-y-4">
