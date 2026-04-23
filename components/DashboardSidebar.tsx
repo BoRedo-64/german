@@ -10,16 +10,17 @@ type Language = 'en' | 'fr' | 'ar'
 
 interface DashboardSidebarProps {
   language?: Language
+  open: boolean
+  setOpen: (value: boolean) => void
 }
 
-export function DashboardSidebar({ language = 'en' }: DashboardSidebarProps) {
+export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
   const [name, setName] = useState<string>('Loading...')
   const [level, setLevel] = useState<string>('')
 
-  const [open, setOpen] = useState(false) // 🔥 mobile toggle
 
   const menuItems = [
     { key: 'exercises', href: '/dashboard/exercises', icon: '📝' },
@@ -58,16 +59,10 @@ export function DashboardSidebar({ language = 'en' }: DashboardSidebarProps) {
 
   return (
     <>
-      {/* 🔥 MOBILE TOP BAR */}
-      <div className="md:hidden flex items-center justify-between p-4 border-b">
-        <button onClick={() => setOpen(true)}>☰</button>
-        <span className="font-semibold">Dashboard</span>
-      </div>
-
       {/* 🔥 OVERLAY */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
           onClick={() => setOpen(false)}
         />
       )}
@@ -75,7 +70,7 @@ export function DashboardSidebar({ language = 'en' }: DashboardSidebarProps) {
       {/* SIDEBAR */}
       <aside
         className={`
-          fixed md:static z-50 top-0 left-0 h-screen w-64 bg-card border-r border-border flex flex-col transition-transform
+          fixed md:static top-0 left-0 z-50 h-screen w-64 bg-card border-r border-border flex flex-col transition-transform
           ${open ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
         `}
@@ -83,52 +78,60 @@ export function DashboardSidebar({ language = 'en' }: DashboardSidebarProps) {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 p-3 border-b hover:bg-secondary"
-          onClick={() => setOpen(false)}
+          className="flex items-center gap-2 p-3 border-b border-border hover:bg-secondary transition-colors"
         >
-          <img src="/german.png" className="h-12 mx-auto" />
+          <img src="/german.png" alt="German Logo" className="h-15 w-auto ml-12" />
         </Link>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase px-4 py-2">
+            Learning
+          </h3>
+
           {menuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
+              onClick={() => setOpen(false)} // 🔥 close on click
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive(item.href)
-                  ? 'bg-primary text-white'
-                  : 'hover:bg-secondary'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-foreground hover:bg-secondary'
               }`}
             >
-              <span>{item.icon}</span>
-              <span>{t(item.key as any, language)}</span>
+              <span className="text-xl">{item.icon}</span>
+              <span className="font-medium text-sm">
+                {t(item.key as any, language)}
+              </span>
             </Link>
           ))}
         </nav>
 
         {/* Profile */}
-        <Link
-          href="/dashboard/profile"
-          onClick={() => setOpen(false)}
-          className="p-4 border-t"
-        >
-          <div className="text-center">
-            <p className="font-semibold">{name}</p>
-            <p className="text-sm text-muted-foreground">
-              Level {level}
+        <Link href="/dashboard/profile" className="p-4 border-t border-border block">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 text-center hover:opacity-90 transition">
+            <div className="text-3xl mb-2">👤</div>
+
+            <p className="text-sm font-semibold text-foreground">
+              {name}
             </p>
+
+            {level && (
+              <p className="text-xs text-muted-foreground">
+                Level {level}
+              </p>
+            )}
           </div>
         </Link>
 
         {/* Logout */}
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-border">
           <button
             onClick={handleLogout}
-            className="w-full bg-red-500 text-white py-2 rounded-lg"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium text-sm"
           >
-            Logout
+            {t('Logout', language) || 'Logout'}
           </button>
         </div>
       </aside>

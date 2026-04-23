@@ -16,6 +16,7 @@ export default function ExercisesPage() {
   const [loading, setLoading] = useState(true)
   const [level, setLevel] = useState<string>('A1')
   const [exercises, setExercises] = useState<any[]>([])
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,17 +59,31 @@ export default function ExercisesPage() {
 
   return (
     <div className="flex h-screen bg-background">
-      <DashboardSidebar language={language} />
+      <DashboardSidebar language={language} open={sidebarOpen} setOpen={setSidebarOpen}/>
 
       <main className="flex-1 overflow-y-auto">
 
         {/* Header */}
         <div className="bg-white border-b border-border sticky top-0 z-10">
           <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-foreground">
-              {t('exercises', language)} ({level})
-            </h1>
 
+            {/* LEFT SIDE (button + title) */}
+            <div className="flex items-center gap-4">
+              
+              {/* 🔥 MOBILE SIDEBAR BUTTON */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden text-2xl"
+              >
+                ☰
+              </button>
+
+              <h1 className="text-3xl font-bold text-foreground">
+                {t('exercises', language)} ({level})
+              </h1>
+            </div>
+
+            {/* RIGHT SIDE */}
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value as Language)}
@@ -78,6 +93,7 @@ export default function ExercisesPage() {
               <option value="fr">Français</option>
               <option value="ar">العربية</option>
             </select>
+
           </div>
         </div>
 
