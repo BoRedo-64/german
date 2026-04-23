@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabaseClient'
-import { Video, Calendar } from 'lucide-react'
+import { Video, Calendar, Menu } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -67,9 +67,9 @@ export default function MeetingsPage() {
               {/* 🔥 MOBILE SIDEBAR BUTTON */}
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="md:hidden text-2xl"
+                className="md:hidden p-2 rounded-lg hover:bg-secondary transition active:scale-95"
               >
-                ☰
+                <Menu className="w-6 h-6" />
               </button>
 
               <h1 className="text-3xl font-bold text-foreground">

@@ -17,6 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { Menu } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -119,9 +120,9 @@ export default function StatisticsPage() {
               {/* 🔥 MOBILE SIDEBAR BUTTON */}
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="md:hidden text-2xl"
+                className="md:hidden p-2 rounded-lg hover:bg-secondary transition active:scale-95"
               >
-                ☰
+                <Menu className="w-6 h-6" />
               </button>
 
               <h1 className="text-3xl font-bold text-foreground">

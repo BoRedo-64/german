@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/button'
 import { t } from '@/lib/i18n'
 import Link from 'next/link'
-import { Brain, FileText, Headphones } from 'lucide-react'
+import { Brain, FileText, Headphones, Menu } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -73,9 +73,9 @@ export default function ExercisesPage() {
               {/* 🔥 MOBILE SIDEBAR BUTTON */}
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="md:hidden text-2xl"
+                className="md:hidden p-2 rounded-lg hover:bg-secondary transition active:scale-95"
               >
-                ☰
+                <Menu className="w-6 h-6" />
               </button>
 
               <h1 className="text-3xl font-bold text-foreground">
