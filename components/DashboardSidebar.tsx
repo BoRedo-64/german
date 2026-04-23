@@ -70,7 +70,7 @@ export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSi
       {/* SIDEBAR */}
       <aside
         className={`
-          fixed md:static top-0 left-0 z-50 h-screen w-64 bg-card border-r border-border flex flex-col transition-transform
+          fixed md:static top-0 left-0 z-50 h-dvh w-64 bg-card border-r border-border flex flex-col transition-transform
           ${open ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
         `}
