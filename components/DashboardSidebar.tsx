@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { t } from '@/lib/i18n'
 
+// 👉 ADD THIS
+import { FileText, BarChart3, Video, User, LogOut } from 'lucide-react'
+
 type Language = 'en' | 'fr' | 'ar'
 
 interface DashboardSidebarProps {
@@ -14,18 +17,22 @@ interface DashboardSidebarProps {
   setOpen: (value: boolean) => void
 }
 
-export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSidebarProps) {
+export function DashboardSidebar({
+  language = 'en',
+  open,
+  setOpen,
+}: DashboardSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
   const [name, setName] = useState<string>('Loading...')
   const [level, setLevel] = useState<string>('')
 
-
+  // 👉 replace emoji with icon components
   const menuItems = [
-    { key: 'exercises', href: '/dashboard/exercises', icon: '📝' },
-    { key: 'statistics', href: '/dashboard/statistics', icon: '📊' },
-    { key: 'joinSession', href: '/dashboard/meetings', icon: '🎤' },
+    { key: 'exercises', href: '/dashboard/exercises', icon: FileText },
+    { key: 'statistics', href: '/dashboard/statistics', icon: BarChart3 },
+    { key: 'joinSession', href: '/dashboard/meetings', icon: Video },
   ]
 
   const isActive = (href: string) => pathname === href
@@ -59,7 +66,7 @@ export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSi
 
   return (
     <>
-      {/* 🔥 OVERLAY */}
+      {/* OVERLAY */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
@@ -89,39 +96,59 @@ export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSi
             Learning
           </h3>
 
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)} // 🔥 close on click
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                isActive(item.href)
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-foreground hover:bg-secondary'
-              }`}
-            >
-              <span className="text-xl">{item.icon}</span>
-              <span className="font-medium text-sm">
-                {t(item.key as any, language)}
-              </span>
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const Icon = item.icon
+            const active = isActive(item.href)
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  active
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-foreground hover:bg-secondary'
+                }`}
+              >
+                {/* ICON */}
+                <Icon
+                  className={`w-5 h-5 ${
+                    active ? 'text-white' : 'text-muted-foreground'
+                  }`}
+                />
+
+                {/* TEXT */}
+                <span className="font-medium text-sm">
+                  {t(item.key as any, language)}
+                </span>
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Profile */}
         <Link href="/dashboard/profile" className="p-4 border-t border-border block">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 text-center hover:opacity-90 transition">
-            <div className="text-3xl mb-2">👤</div>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 flex items-center gap-3 hover:opacity-90 transition">
+            
+            {/* ICON */}
+            <div className="p-2 rounded-lg">
+              <User className="w-6 h-6 text-blue-600" />
+            </div>
 
-            <p className="text-sm font-semibold text-foreground">
-              {name}
-            </p>
-
-            {level && (
-              <p className="text-xs text-muted-foreground">
-                Level {level}
+            {/* TEXT */}
+            <div className="flex flex-col">
+              <p className="text-sm font-semibold text-foreground">
+                {name}
               </p>
-            )}
+
+              {level && (
+                <p className="text-xs text-muted-foreground">
+                  Level {level}
+                </p>
+              )}
+            </div>
+
           </div>
         </Link>
 
@@ -129,8 +156,11 @@ export function DashboardSidebar({ language = 'en', open, setOpen,}: DashboardSi
         <div className="p-4 border-t border-border">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium text-sm"
+            className="w-full flex items-center justify-start gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium text-sm"
           >
+            <div className="p-2 rounded-lg">
+              <LogOut className="w-5 h-5 text-red-500" />
+            </div>
             {t('Logout', language) || 'Logout'}
           </button>
         </div>
