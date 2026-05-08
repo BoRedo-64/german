@@ -14,6 +14,7 @@ import {
   Paperclip,
   ShieldCheck,
   Brain,
+  Trash,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -53,6 +54,12 @@ export function AdminSidebar({
     key: 'Add Test Question',
     href: '/admin/placement',
     icon: PlusCircle,
+  },
+
+    {
+    key: 'Delete Exercice',
+    href: '/admin/delete-exercice',
+    icon: Trash,
   },
 
   {
