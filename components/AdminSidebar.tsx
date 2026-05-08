@@ -13,6 +13,7 @@ import {
   LogOut,
   Paperclip,
   ShieldCheck,
+  Brain,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -35,30 +36,37 @@ export function AdminSidebar({
     useState<string>('Loading...')
 
   const adminItems = [
-    {
-      key: 'Add File',
-      href: '/admin/exercises',
-      icon: Paperclip,
-    },
+  {
+    key: 'Add File',
+    href: '/admin/exercises',
+    icon: Paperclip,
+  },
 
-    {
-      key: 'Add Quiz',
-      href: '/admin/quiz',
-      icon: PlusCircle,
-    },
+  {
+    key: 'Add Quiz',
+    href: '/admin/quiz',
+    icon: PlusCircle,
+  },
 
-    {
-      key: 'Add Meeting',
-      href: '/admin/meetings',
-      icon: Calendar,
-    },
+  // ✅ NEW
+  {
+    key: 'Add Test Question',
+    href: '/admin/placement',
+    icon: PlusCircle,
+  },
 
-    {
-      key: 'Profile',
-      href: '/admin/profile',
-      icon: ShieldCheck,
-    },
-  ]
+  {
+    key: 'Add Meeting',
+    href: '/admin/meetings',
+    icon: Calendar,
+  },
+
+  {
+    key: 'Profile',
+    href: '/admin/profile',
+    icon: ShieldCheck,
+  },
+]
 
   const isActive = (href: string) =>
     pathname === href

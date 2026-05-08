@@ -158,30 +158,30 @@ export default function AddExercisePage() {
           <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
 
-  {/* MOBILE MENU */}
-  <button
-    onClick={() => setSidebarOpen(true)}
-    className="
-      md:hidden
-      w-12 h-12 rounded-2xl
-      bg-white shadow-md border
-      flex items-center justify-center
-    "
-  >
-    <Menu className="w-6 h-6" />
-  </button>
+              {/* MOBILE MENU */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="
+                  md:hidden
+                  w-12 h-12 rounded-2xl
+                  bg-white shadow-md border
+                  flex items-center justify-center
+                "
+              >
+                <Menu className="w-6 h-6" />
+              </button>
 
-  <div>
-    <h1 className="text-4xl font-black tracking-tight text-foreground">
-                Add Exercise
-              </h1>
+              <div>
+                <h1 className="text-4xl font-black tracking-tight text-foreground">
+                            Add Exercise
+                          </h1>
 
-    <p className="text-muted-foreground mt-1">
-                Create new lessons and learning resources
-              </p>
-  </div>
+                <p className="text-muted-foreground mt-1">
+                            Create new lessons and learning resources
+                          </p>
+              </div>
 
-</div>
+            </div>
 
             <select
               value={language}
