@@ -1,43 +1,82 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/button'
-import { User } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
+
+import {
+  User,
+  Lock,
+  Mail,
+  ShieldCheck,
+  Sparkles,
+  Menu,
+  GraduationCap,
+  CheckCircle2,
+} from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
 export default function ProfilePage() {
-  const { language, setLanguage } = useLanguage()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { language, setLanguage } =
+    useLanguage()
 
-  const [user, setUser] = useState<any>(null)
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false)
+
+  const [user, setUser] =
+    useState<any>(null)
 
   // 🔐 PASSWORD STATES
-  const [showPasswordForm, setShowPasswordForm] = useState(false)
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [
+    showPasswordForm,
+    setShowPasswordForm,
+  ] = useState(false)
+
+  const [password, setPassword] =
+    useState('')
+
+  const [
+    confirmPassword,
+    setConfirmPassword,
+  ] = useState('')
+
+  const [loading, setLoading] =
+    useState(false)
+
+  const [success, setSuccess] =
+    useState(false)
 
   // 🔥 FETCH USER
   useEffect(() => {
     const fetchData = async () => {
-      const { data: userData } = await supabase.auth.getUser()
-      const currentUser = userData.user
+      const {
+        data: userData,
+      } =
+        await supabase.auth.getUser()
+
+      const currentUser =
+        userData.user
 
       if (!currentUser) return
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single()
+      const { data: profile } =
+        await supabase
+          .from('profiles')
+          .select('*')
+          .eq(
+            'id',
+            currentUser.id
+          )
+          .single()
 
       setUser({
         ...profile,
-        email: currentUser.email,
+        email:
+          currentUser.email,
       })
     }
 
@@ -45,36 +84,58 @@ export default function ProfilePage() {
   }, [])
 
   // 🔐 CHANGE PASSWORD
-  const handleChangePassword = async () => {
-    if (!password || password.length < 6) {
-      return alert('Password must be at least 6 characters')
+  const handleChangePassword =
+    async () => {
+      if (
+        !password ||
+        password.length < 6
+      ) {
+        return alert(
+          'Password must be at least 6 characters'
+        )
+      }
+
+      if (
+        password !==
+        confirmPassword
+      ) {
+        return alert(
+          'Passwords do not match'
+        )
+      }
+
+      setLoading(true)
+
+      const { error } =
+        await supabase.auth.updateUser(
+          {
+            password,
+          }
+        )
+
+      setLoading(false)
+
+      if (error) {
+        console.error(error)
+
+        alert(
+          'Error updating password ❌'
+        )
+      } else {
+        setSuccess(true)
+
+        setPassword('')
+        setConfirmPassword('')
+        setShowPasswordForm(false)
+
+        setTimeout(() => {
+          setSuccess(false)
+        }, 3000)
+      }
     }
-
-    if (password !== confirmPassword) {
-      return alert('Passwords do not match')
-    }
-
-    setLoading(true)
-
-    const { error } = await supabase.auth.updateUser({
-      password: password,
-    })
-
-    setLoading(false)
-
-    if (error) {
-      console.error(error)
-      alert('Error updating password ❌')
-    } else {
-      alert('Password updated successfully ✅')
-      setPassword('')
-      setConfirmPassword('')
-      setShowPasswordForm(false)
-    }
-  }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
 
       {/* SIDEBAR */}
       <DashboardSidebar
@@ -84,133 +145,518 @@ export default function ProfilePage() {
       />
 
       {/* MAIN */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 h-screen overflow-y-auto">
 
         {/* HEADER */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
-          <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/30">
 
+          <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+
+            {/* LEFT */}
             <div className="flex items-center gap-4">
+
+              {/* MOBILE BTN */}
               <button
-                onClick={() => setSidebarOpen(true)}
-                className="md:hidden text-2xl"
+                onClick={() =>
+                  setSidebarOpen(true)
+                }
+                className="
+                  md:hidden
+                  w-12 h-12 rounded-2xl
+                  bg-white shadow-md border
+                  flex items-center justify-center
+                "
               >
-                ☰
+                <Menu className="w-6 h-6" />
               </button>
 
-              <h1 className="text-3xl font-bold">
-                Profile
-              </h1>
+              <div className="flex items-center gap-4">
+
+                <div>
+
+                  <h1 className="text-4xl font-black tracking-tight">
+                    My Profile
+                  </h1>
+
+                  <p className="text-muted-foreground mt-1">
+                    Manage your account and security settings
+                  </p>
+
+                </div>
+
+              </div>
             </div>
 
+            {/* RIGHT */}
             <select
               value={language}
-              onChange={(e) => setLanguage(e.target.value as Language)}
-              className="px-3 py-2 rounded-lg border"
+              onChange={(e) =>
+                setLanguage(
+                  e.target.value as Language
+                )
+              }
+              className="
+                px-4 py-3 rounded-2xl
+                border bg-white shadow-sm
+              "
             >
-              <option value="en">EN</option>
-              <option value="fr">FR</option>
-              <option value="ar">AR</option>
+              <option value="en">
+                English
+              </option>
+
+              <option value="fr">
+                Français
+              </option>
+
+              <option value="ar">
+                العربية
+              </option>
             </select>
+
+          </div>
+        </div>
+
+        {/* HERO */}
+        <div className="max-w-6xl mx-auto px-6 pt-8">
+
+          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-10 text-white shadow-2xl">
+
+            {/* BG */}
+            <div className="absolute inset-0 opacity-20">
+
+              <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white blur-3xl" />
+
+              <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-cyan-300 blur-3xl" />
+
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+
+              {/* LEFT */}
+              <div className="flex items-center gap-6">
+
+                <div className="w-28 h-28 rounded-[32px] bg-white/20 backdrop-blur-md flex items-center justify-center shadow-2xl">
+
+                  <User className="w-14 h-14 text-white" />
+
+                </div>
+
+                <div>
+
+                  <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl mb-5">
+
+                    <Sparkles className="w-4 h-4" />
+
+                    <span className="text-sm font-semibold">
+                      Deutschly Student
+                    </span>
+
+                  </div>
+
+                  <h2 className="text-5xl font-black leading-tight">
+                    {user?.first_name}{' '}
+                    {user?.last_name}
+                  </h2>
+
+                  <p className="text-white/80 text-lg mt-3">
+                    Continue your German learning journey 🇩🇪
+                  </p>
+
+                </div>
+
+              </div>
+
+              {/* LEVEL */}
+              <div className="bg-white/20 backdrop-blur-md rounded-[28px] p-6 min-w-[220px] shadow-xl">
+
+                <div className="flex items-center gap-4">
+
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+
+                    <GraduationCap className="w-8 h-8 text-white" />
+
+                  </div>
+
+                  <div>
+
+                    <p className="text-white/70 text-sm">
+                      Current Level
+                    </p>
+
+                    <h3 className="text-4xl font-black mt-1">
+                      {user?.level ||
+                        'A1'}
+                    </h3>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
 
         {/* CONTENT */}
-        <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+        <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
 
-          {/* PROFILE HEADER */}
-          <div className="flex items-center gap-6">
-            <div className="bg-blue-100 p-3 rounded-full flex items-center justify-center">
-              <User className="w-12 h-12 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">
-                {user?.first_name} {user?.last_name}
-              </h1>
-              <p className="text-muted-foreground">
-                Level {user?.level || 'A1'}
-              </p>
-            </div>
-          </div>
+          {/* SUCCESS */}
+          {success && (
+            <div className="bg-green-100 border border-green-200 text-green-800 rounded-[28px] p-5 flex items-center gap-4 shadow-sm">
 
-          {/* INFO */}
-          <div className="bg-card rounded-xl p-6 border">
-            <h2 className="text-xl font-bold mb-4">
-              Account Information
-            </h2>
+              <div className="w-14 h-14 rounded-2xl bg-green-500 flex items-center justify-center text-white shadow-lg">
 
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p>{user?.email || '—'}</p>
+                <CheckCircle2 className="w-7 h-7" />
+
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground">Level</p>
-                <p>{user?.level}</p>
+
+                <p className="font-bold text-lg">
+                  Password Updated
+                </p>
+
+                <p className="text-sm opacity-80">
+                  Your password has been changed successfully.
+                </p>
+
               </div>
+
             </div>
-          </div>
+          )}
 
-          {/* ACTIONS */}
-          <div className="space-y-4">
+          <div className="grid xl:grid-cols-[1fr_360px] gap-8">
 
-            <div className="flex gap-4 flex-wrap">
-              <Button
-                variant="outline"
-                onClick={() => setShowPasswordForm(!showPasswordForm)}
-              >
-                Change Password
-              </Button>
-            </div>
+            {/* LEFT */}
+            <div className="space-y-8">
 
-            {/* 🔐 PASSWORD FORM */}
-            {showPasswordForm && (
-              <div className="bg-card border rounded-xl p-6 space-y-4 max-w-md">
+              {/* ACCOUNT INFO */}
+              <div className="bg-white rounded-[32px] border shadow-xl overflow-hidden">
 
-                <h3 className="font-semibold text-lg">
-                  Update Password
-                </h3>
+                {/* TOP */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-7 text-white">
 
-                <input
-                  type="password"
-                  placeholder="New password"
-                  className="w-full border p-3 rounded-lg"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                  <div className="flex items-center gap-4">
 
-                <input
-                  type="password"
-                  placeholder="Confirm password"
-                  className="w-full border p-3 rounded-lg"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
 
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleChangePassword}
-                    disabled={loading}
-                    className="bg-primary text-white"
-                  >
-                    {loading ? 'Updating...' : 'Save'}
-                  </Button>
+                      <ShieldCheck className="w-7 h-7" />
 
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowPasswordForm(false)}
-                  >
-                    Cancel
-                  </Button>
+                    </div>
+
+                    <div>
+
+                      <h3 className="text-3xl font-black">
+                        Account Information
+                      </h3>
+
+                      <p className="text-white/80 mt-1">
+                        Your profile details and learning level
+                      </p>
+
+                    </div>
+
+                  </div>
                 </div>
 
-              </div>
-            )}
-          </div>
+                {/* CONTENT */}
+                <div className="p-8 grid md:grid-cols-2 gap-6">
 
+                  {/* EMAIL */}
+                  <div className="rounded-2xl border bg-secondary/40 p-6">
+
+                    <div className="flex items-center gap-3 mb-4">
+
+                      <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+
+                        <Mail className="w-5 h-5 text-blue-600" />
+
+                      </div>
+
+                      <div>
+
+                        <p className="text-sm text-muted-foreground">
+                          Email Address
+                        </p>
+
+                        <p className="font-semibold mt-1 break-all">
+                          {user?.email ||
+                            '—'}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  {/* LEVEL */}
+                  <div className="rounded-2xl border bg-secondary/40 p-6">
+
+                    <div className="flex items-center gap-3 mb-4">
+
+                      <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+
+                        <GraduationCap className="w-5 h-5 text-purple-600" />
+
+                      </div>
+
+                      <div>
+
+                        <p className="text-sm text-muted-foreground">
+                          German Level
+                        </p>
+
+                        <p className="font-semibold mt-1">
+                          {user?.level ||
+                            'A1'}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+              {/* PASSWORD */}
+              <div className="bg-white rounded-[32px] border shadow-xl overflow-hidden">
+
+                {/* TOP */}
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 p-7 text-white">
+
+                  <div className="flex items-center gap-4">
+
+                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+
+                      <Lock className="w-7 h-7" />
+
+                    </div>
+
+                    <div>
+
+                      <h3 className="text-3xl font-black">
+                        Security
+                      </h3>
+
+                      <p className="text-white/80 mt-1">
+                        Update your account password securely
+                      </p>
+
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* CONTENT */}
+                <div className="p-8 space-y-6">
+
+                  {!showPasswordForm ? (
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        setShowPasswordForm(
+                          true
+                        )
+                      }
+                      className="
+                        h-14 px-8 rounded-2xl
+                        border-2 font-semibold
+                      "
+                    >
+                      Change Password
+                    </Button>
+                  ) : (
+                    <div className="space-y-5 max-w-lg">
+
+                      <div className="space-y-3">
+
+                        <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                          New Password
+                        </label>
+
+                        <input
+                          type="password"
+                          placeholder="Enter new password"
+                          className="
+                            w-full h-14 rounded-2xl
+                            border-2 border-border
+                            px-5 bg-white
+                            focus:outline-none focus:ring-2 focus:ring-orange-500
+                          "
+                          value={password}
+                          onChange={(e) =>
+                            setPassword(
+                              e.target
+                                .value
+                            )
+                          }
+                        />
+
+                      </div>
+
+                      <div className="space-y-3">
+
+                        <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                          Confirm Password
+                        </label>
+
+                        <input
+                          type="password"
+                          placeholder="Confirm new password"
+                          className="
+                            w-full h-14 rounded-2xl
+                            border-2 border-border
+                            px-5 bg-white
+                            focus:outline-none focus:ring-2 focus:ring-orange-500
+                          "
+                          value={
+                            confirmPassword
+                          }
+                          onChange={(e) =>
+                            setConfirmPassword(
+                              e.target
+                                .value
+                            )
+                          }
+                        />
+
+                      </div>
+
+                      <div className="flex flex-wrap gap-4 pt-2">
+
+                        <Button
+                          onClick={
+                            handleChangePassword
+                          }
+                          disabled={
+                            loading
+                          }
+                          className="
+                            h-14 px-8 rounded-2xl
+                            bg-gradient-to-r from-orange-500 to-red-500
+                            hover:opacity-90
+                            text-white font-bold shadow-lg
+                          "
+                        >
+                          {loading
+                            ? 'Updating...'
+                            : 'Save Password'}
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          onClick={() =>
+                            setShowPasswordForm(
+                              false
+                            )
+                          }
+                          className="h-14 px-8 rounded-2xl border-2"
+                        >
+                          Cancel
+                        </Button>
+
+                      </div>
+
+                    </div>
+                  )}
+
+                </div>
+              </div>
+
+            </div>
+
+            {/* RIGHT */}
+            <div className="space-y-8">
+
+              {/* PROFILE SUMMARY */}
+              <div className="bg-white rounded-[32px] border shadow-xl overflow-hidden">
+
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-7 text-white">
+
+                  <h3 className="text-2xl font-black">
+                    Profile Summary
+                  </h3>
+
+                  <p className="text-white/80 mt-1">
+                    Your current learning status
+                  </p>
+
+                </div>
+
+                <div className="p-7 space-y-5">
+
+                  <SummaryCard
+                    title="Student Name"
+                    value={`${user?.first_name || ''} ${user?.last_name || ''}`}
+                  />
+
+                  <SummaryCard
+                    title="Current Level"
+                    value={
+                      user?.level ||
+                      'A1'
+                    }
+                  />
+
+                  <SummaryCard
+                    title="Account Status"
+                    value="Active"
+                  />
+
+                </div>
+              </div>
+
+              {/* MOTIVATION */}
+              <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-8 text-white shadow-2xl">
+
+                <div className="absolute top-0 right-0 w-52 h-52 rounded-full bg-white/20 blur-3xl" />
+
+                <div className="relative z-10">
+
+                  <div className="w-16 h-16 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+
+                    <Sparkles className="w-8 h-8" />
+
+                  </div>
+
+                  <h3 className="text-3xl font-black leading-tight">
+                    Keep Going 🚀
+                  </h3>
+
+                  <p className="text-white/80 mt-4 leading-relaxed">
+                    Daily practice and consistency are the fastest
+                    ways to master German.
+                  </p>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </main>
+    </div>
+  )
+}
+
+function SummaryCard({
+  title,
+  value,
+}: any) {
+  return (
+    <div className="rounded-2xl bg-secondary p-5">
+
+      <p className="text-sm text-muted-foreground">
+        {title}
+      </p>
+
+      <p className="font-bold text-lg mt-2 break-words">
+        {value}
+      </p>
+
     </div>
   )
 }

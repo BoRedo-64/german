@@ -5,7 +5,15 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { t } from '@/lib/i18n'
-import { PlusCircle, Calendar, User, LogOut, ClipboardList, Paperclip } from 'lucide-react'
+
+import {
+  PlusCircle,
+  Calendar,
+  User,
+  LogOut,
+  Paperclip,
+  ShieldCheck,
+} from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -23,31 +31,60 @@ export function AdminSidebar({
   const pathname = usePathname()
   const router = useRouter()
 
-  const [name, setName] = useState<string>('Loading...')
+  const [name, setName] =
+    useState<string>('Loading...')
 
   const adminItems = [
-    { key: 'Add File', href: '/admin/exercises', icon: Paperclip },
-    { key: 'Add Quiz', href: '/admin/quiz', icon: PlusCircle },
-    { key: 'Add Meeting', href: '/admin/meetings', icon: Calendar },
+    {
+      key: 'Add File',
+      href: '/admin/exercises',
+      icon: Paperclip,
+    },
+
+    {
+      key: 'Add Quiz',
+      href: '/admin/quiz',
+      icon: PlusCircle,
+    },
+
+    {
+      key: 'Add Meeting',
+      href: '/admin/meetings',
+      icon: Calendar,
+    },
+
+    {
+      key: 'Profile',
+      href: '/admin/profile',
+      icon: ShieldCheck,
+    },
   ]
 
-  const isActive = (href: string) => pathname === href
+  const isActive = (href: string) =>
+    pathname === href
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data } = await supabase.auth.getUser()
+      const { data } =
+        await supabase.auth.getUser()
+
       const user = data.user
 
       if (!user) return
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('first_name, last_name')
-        .eq('id', user.id)
-        .single()
+      const { data: profile } =
+        await supabase
+          .from('profiles')
+          .select(
+            'first_name, last_name'
+          )
+          .eq('id', user.id)
+          .single()
 
       if (profile) {
-        setName(`${profile.first_name} ${profile.last_name}`)
+        setName(
+          `${profile.first_name} ${profile.last_name}`
+        )
       }
     }
 
@@ -64,7 +101,7 @@ export function AdminSidebar({
       {/* OVERLAY */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setOpen(false)}
         />
       )}
@@ -72,84 +109,141 @@ export function AdminSidebar({
       {/* SIDEBAR */}
       <aside
         className={`
-          fixed md:static top-0 left-0 z-50 h-dvh w-64 bg-card border-r border-border flex flex-col transition-transform
-          ${open ? 'translate-x-0' : '-translate-x-full'}
+          fixed md:static top-0 left-0 z-50
+          h-dvh w-72 bg-white border-r border-border
+          flex flex-col transition-transform duration-300
+          shadow-xl md:shadow-none
+          ${open
+            ? 'translate-x-0'
+            : '-translate-x-full'}
           md:translate-x-0
         `}
       >
-        {/* Logo */}
+
+        {/* LOGO */}
         <Link
           href="/"
-          className="flex items-center gap-2 p-3 border-b border-border hover:bg-secondary transition-colors"
+          className="h-24 flex items-center justify-center border-b border-border hover:bg-secondary/40 transition"
         >
-          <img src="/german.png" className="h-15 w-auto ml-12" />
+          <img
+            src="/german.png"
+            className="h-16 w-auto"
+          />
         </Link>
 
-        {/* Navigation */}
+        {/* NAVIGATION */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase px-4 py-2">
-            Admin
-          </h3>
+
+          <div className="px-4 pb-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Admin Panel
+            </p>
+          </div>
 
           {adminItems.map((item) => {
             const Icon = item.icon
-            const active = isActive(item.href)
+            const active = isActive(
+              item.href
+            )
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  active
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-foreground hover:bg-secondary'
-                }`}
+                onClick={() =>
+                  setOpen(false)
+                }
+                className={`
+                  group flex items-center gap-3
+                  px-4 py-3 rounded-2xl
+                  transition-all duration-200
+                  ${
+                    active
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                      : 'hover:bg-secondary text-foreground'
+                  }
+                `}
               >
-                <Icon
-                  className={`w-5 h-5 ${
-                    active ? 'text-white' : 'text-muted-foreground'
-                  }`}
-                />
+                <div
+                  className={`
+                    flex items-center justify-center
+                    w-10 h-10 rounded-xl
+                    ${
+                      active
+                        ? 'bg-white/20'
+                        : 'bg-secondary'
+                    }
+                  `}
+                >
+                  <Icon
+                    className={`w-5 h-5 ${
+                      active
+                        ? 'text-white'
+                        : 'text-muted-foreground'
+                    }`}
+                  />
+                </div>
 
                 <span className="font-medium text-sm">
-                  {t(item.key as any, language)}
+                  {t(
+                    item.key as any,
+                    language
+                  )}
                 </span>
               </Link>
             )
           })}
         </nav>
 
-        {/* Profile */}
-        <Link href="" className="p-4 border-t border-border block">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 flex items-center gap-3 hover:opacity-90 transition">
-            
-            <div>
-              <User className="w-6 h-6 text-blue-600" />
-            </div>
-
-            <div className="flex flex-col">
-              <p className="text-sm font-semibold text-foreground">
-                {name}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Admin
-              </p>
-            </div>
-
-          </div>
-        </Link>
-
-        {/* Logout */}
+        {/* PROFILE CARD */}
         <div className="p-4 border-t border-border">
+
+          <Link
+            href="/admin/profile"
+            onClick={() =>
+              setOpen(false)
+            }
+            className="block"
+          >
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-4 flex items-center gap-3 hover:scale-[1.02] transition-all">
+
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-md">
+                <User className="w-6 h-6 text-white" />
+              </div>
+
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-sm font-semibold text-foreground truncate">
+                  {name}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  Administrator
+                </p>
+              </div>
+            </div>
+          </Link>
+
+          {/* LOGOUT */}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-start gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium text-sm"
+            className="
+              mt-4 w-full flex items-center gap-3
+              px-4 py-3 rounded-2xl
+              bg-red-500/10 hover:bg-red-500/20
+              transition-all
+              text-red-500 font-medium text-sm
+            "
           >
-            <div className="p-2 rounded-lg">
-              <LogOut className="w-5 h-5 text-red-500" />
+            <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+              <LogOut className="w-5 h-5" />
             </div>
-            {t('Logout', language) || 'Logout'}
+
+            <span>
+              {t(
+                'Logout',
+                language
+              ) || 'Logout'}
+            </span>
           </button>
         </div>
       </aside>
