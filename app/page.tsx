@@ -113,7 +113,7 @@ export default function Home() {
                 {t('cta.desc', language)}
               </p>
 
-              <Link href="/dashboard/exercises">
+              <Link href="/placement">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-xl font-semibold">
                   {t('cta.button', language)} →
                 </Button>
