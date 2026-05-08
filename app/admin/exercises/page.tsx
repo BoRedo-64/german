@@ -22,6 +22,7 @@ import {
   Headphones,
   UploadCloud,
   Sparkles,
+  Menu,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -155,16 +156,32 @@ export default function AddExercisePage() {
         <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/80 border-b border-white/40">
 
           <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
 
-            <div>
-              <h1 className="text-4xl font-black tracking-tight text-foreground">
+  {/* MOBILE MENU */}
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="
+      md:hidden
+      w-12 h-12 rounded-2xl
+      bg-white shadow-md border
+      flex items-center justify-center
+    "
+  >
+    <Menu className="w-6 h-6" />
+  </button>
+
+  <div>
+    <h1 className="text-4xl font-black tracking-tight text-foreground">
                 Add Exercise
               </h1>
 
-              <p className="text-muted-foreground mt-1">
+    <p className="text-muted-foreground mt-1">
                 Create new lessons and learning resources
               </p>
-            </div>
+  </div>
+
+</div>
 
             <select
               value={language}
