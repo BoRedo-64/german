@@ -236,12 +236,6 @@ export default function StatisticsPage() {
 
               <div className="flex items-center gap-4">
 
-                <div className="w-16 h-16 rounded-[28px] bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-xl">
-
-                  <TrendingUp className="w-8 h-8 text-white" />
-
-                </div>
-
                 <div>
 
                   <h1 className="text-4xl font-black tracking-tight">
