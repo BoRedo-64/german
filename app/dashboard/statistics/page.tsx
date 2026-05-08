@@ -18,12 +18,13 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Menu } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 type Language = 'en' | 'fr' | 'ar'
 
 export default function StatisticsPage() {
-  const [language, setLanguage] = useState<Language>('en')
 
+  const { language, setLanguage } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState<any>(null)
   const [chartData, setChartData] = useState<any[]>([])

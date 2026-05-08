@@ -5,6 +5,7 @@ import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabaseClient'
 import { Video, Calendar, Menu } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 type Language = 'en' | 'fr' | 'ar'
 
@@ -16,7 +17,7 @@ interface Meeting {
 }
 
 export default function MeetingsPage() {
-  const [language, setLanguage] = useState<Language>('en')
+  const { language, setLanguage } = useLanguage()
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -99,9 +100,21 @@ export default function MeetingsPage() {
           ) : (
             <div className="space-y-6">
 
-              <p className="text-muted-foreground mb-8">
-                Join your scheduled learning sessions.
-              </p>
+              <div className="space-y-4 mb-8">
+                {/* 💡 ADVICE BOX */}
+                <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 flex items-start gap-3">
+                  <div className="text-xl"></div>
+                  <div className="text-sm text-gray-700">
+                    <p className="font-medium mb-1">Tips:</p>
+                    <p>
+                      Try to join on time, use headphones for better focus
+                    </p>
+                    <p>
+                      Actively participate to improve faster
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {meetings.map((meeting) => (
                 <div

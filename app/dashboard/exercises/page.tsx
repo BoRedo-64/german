@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button'
 import { t } from '@/lib/i18n'
 import Link from 'next/link'
 import { Brain, FileText, Headphones, Menu } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 type Language = 'en' | 'fr' | 'ar'
 
 export default function ExercisesPage() {
-  const [language, setLanguage] = useState<Language>('en')
-
+  const { language, setLanguage } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [level, setLevel] = useState<string>('A1')
   const [exercises, setExercises] = useState<any[]>([])
@@ -136,18 +136,18 @@ export default function ExercisesPage() {
           {/* 🎧 AUDIO */}
           <Section>
             {audio.map((a) => (
-              <div
-                key={a.id}
-                onClick={() => window.open(a.file_url, '_blank')}
-                className="bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl p-4 text-white shadow flex items-center gap-3 hover:scale-[1.02] transition cursor-pointer"
-              >
-                
-                <div>
-                  <Headphones className="w-6 h-6" />
-                </div>
+              <Link key={a.id} href={`/dashboard/audio/${a.id}`}>
+                <div className="bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl p-4 text-white shadow flex items-center gap-3 hover:scale-[1.02] transition cursor-pointer">
+                  
+                  <div>
+                    <Headphones className="w-6 h-6" />
+                  </div>
 
-                <h3 className="font-semibold text-lg">{a.title}</h3>
-              </div>
+                  <h3 className="font-semibold text-lg">
+                    {a.title}
+                  </h3>
+                </div>
+              </Link>
             ))}
           </Section>
 
