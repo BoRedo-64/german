@@ -151,9 +151,9 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     'why.grammar.tag': 'A1 → B2 levels',
 
     // CTA
-    'cta.title': 'Ready to Practice?',
-    'cta.desc': 'Challenge yourself with our interactive quizzes and exercises',
-    'cta.button': 'Start Practicing',
+    'cta.title': 'Want to Know Your German Level?',
+    'cta.desc': 'Take our interactive placement test and discover your level from A1 to B2',
+    'cta.button': 'Take the Test',
 
     // FOOTER
     'footer.courses': 'Courses',

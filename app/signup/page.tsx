@@ -1,12 +1,7 @@
 'use client'
 
-import {
-  useEffect,
-  useState,
-} from 'react'
-
+import { useState } from 'react'
 import Link from 'next/link'
-
 import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -15,12 +10,15 @@ import { Input } from '@/components/ui/input'
 import { supabase } from '@/lib/supabaseClient'
 
 import {
+  GraduationCap,
+  Sparkles,
   Mail,
   Lock,
+  CheckCircle2,
   ArrowRight,
 } from 'lucide-react'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
 
   const [email, setEmail] =
@@ -29,140 +27,129 @@ export default function LoginPage() {
   const [password, setPassword] =
     useState('')
 
+  const [confirmPassword, setConfirmPassword] =
+    useState('')
+
   const [loading, setLoading] =
     useState(false)
 
-  const [checkingAuth, setCheckingAuth] =
-    useState(true)
-
   const [error, setError] =
-    useState<string | null>(
-      null
-    )
+    useState<string | null>(null)
 
-  // 🔥 AUTO REDIRECT IF LOGGED IN
-  useEffect(() => {
-    const checkUser =
-      async () => {
-        const {
-          data: { user },
-        } =
-          await supabase.auth.getUser()
+  const [success, setSuccess] =
+    useState(false)
 
-        if (!user) {
-          setCheckingAuth(false)
-          return
-        }
-
-        // 🔐 CHECK ROLE
-        const {
-          data: profile,
-        } = await supabase
-          .from('profiles')
-          .select(
-            'is_admin'
-          )
-          .eq(
-            'id',
-            user.id
-          )
-          .single()
-
-        if (
-          profile?.is_admin
-        ) {
-          router.replace(
-            '/admin/exercises'
-          )
-        } else {
-          router.replace(
-            '/dashboard/exercises'
-          )
-        }
-      }
-
-    checkUser()
-  }, [router])
-
-  // 🔥 LOGIN
+  // 🔥 SIGNUP
   const handleSubmit = async (
     e: React.FormEvent
   ) => {
     e.preventDefault()
 
-    setLoading(true)
     setError(null)
 
-    const {
-      data,
-      error,
-    } =
-      await supabase.auth.signInWithPassword(
-        {
-          email,
-          password,
-        }
-      )
-
-    if (error) {
+    // VALIDATION
+    if (
+      password !==
+      confirmPassword
+    ) {
       setError(
-        error.message
+        'Passwords do not match'
       )
-
-      setLoading(false)
 
       return
     }
 
-    const user =
-      data.user
-
-    // 🔐 CHECK ADMIN
-    const {
-      data: profile,
-    } = await supabase
-      .from('profiles')
-      .select(
-        'is_admin'
-      )
-      .eq(
-        'id',
-        user?.id
-      )
-      .single()
-
     if (
-      profile?.is_admin
+      password.length < 6
     ) {
-      router.replace(
-        '/admin/exercises'
+      setError(
+        'Password must be at least 6 characters'
       )
-    } else {
-      router.replace(
-        '/dashboard/exercises'
-      )
+
+      return
     }
+
+    setLoading(true)
+
+    // 🔥 CREATE ACCOUNT
+    const { error } =
+      await supabase.auth.signUp({
+        email,
+        password,
+
+        options: {
+          emailRedirectTo:
+            undefined,
+        },
+      })
+
+    setLoading(false)
+
+    if (error) {
+      setError(error.message)
+      return
+    }
+
+    setSuccess(true)
+
+    // OPTIONAL REDIRECT
+    setTimeout(() => {
+      router.push('/login')
+    }, 2500)
   }
 
-  // 🔥 LOADING SCREEN
-  if (checkingAuth) {
+  // 🔥 SUCCESS
+  if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center px-4">
 
-        <div className="bg-white rounded-[32px] shadow-2xl border p-10">
+        <div className="w-full max-w-lg">
 
-          <div className="flex flex-col items-center gap-5">
+          <div className="bg-white rounded-[36px] shadow-2xl border border-border overflow-hidden">
 
-            <div className="w-14 h-14 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            {/* TOP */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-10 text-white text-center relative overflow-hidden">
 
-            <p className="text-lg font-semibold text-muted-foreground">
-              Loading...
-            </p>
+              {/* BG */}
+              <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/20 blur-3xl" />
+
+              <div className="relative z-10">
+
+                <div className="w-28 h-28 rounded-[32px] bg-white/20 backdrop-blur-md flex items-center justify-center mx-auto shadow-2xl mb-8">
+
+                  <CheckCircle2 className="w-14 h-14 text-white" />
+
+                </div>
+
+                <h1 className="text-5xl font-black">
+                  Account Created
+                </h1>
+
+                <p className="text-white/80 text-lg mt-5 leading-relaxed max-w-md mx-auto">
+                  Your account was created successfully.
+                  An admin will now configure your profile and level.
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* BOTTOM */}
+            <div className="p-10 text-center">
+
+              <div className="inline-flex items-center gap-3 bg-green-100 text-green-700 px-5 py-3 rounded-2xl font-semibold">
+
+                <Sparkles className="w-5 h-5" />
+
+                Redirecting to login...
+
+              </div>
+
+            </div>
 
           </div>
 
         </div>
-
       </div>
     )
   }
@@ -204,11 +191,11 @@ export default function LoginPage() {
             <div className="relative z-10 text-center">
 
               <h1 className="text-5xl font-black leading-tight">
-                Welcome Back
+                Create Account
               </h1>
 
               <p className="text-white/80 text-lg mt-5 leading-relaxed">
-                Sign in and continue your German learning journey.
+                Join Deutschly and start your German learning journey.
               </p>
 
             </div>
@@ -219,9 +206,7 @@ export default function LoginPage() {
           <div className="p-8 md:p-10">
 
             <form
-              onSubmit={
-                handleSubmit
-              }
+              onSubmit={handleSubmit}
               className="space-y-6"
             >
 
@@ -240,12 +225,9 @@ export default function LoginPage() {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(
-                      e
-                    ) =>
+                    onChange={(e) =>
                       setEmail(
-                        e.target
-                          .value
+                        e.target.value
                       )
                     }
                     required
@@ -270,15 +252,40 @@ export default function LoginPage() {
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    value={
-                      password
-                    }
-                    onChange={(
-                      e
-                    ) =>
+                    value={password}
+                    onChange={(e) =>
                       setPassword(
-                        e.target
-                          .value
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="h-14 rounded-2xl border-2 pl-14"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* CONFIRM */}
+              <div className="space-y-3">
+
+                <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                  Confirm Password
+                </label>
+
+                <div className="relative">
+
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={
+                      confirmPassword
+                    }
+                    onChange={(e) =>
+                      setConfirmPassword(
+                        e.target.value
                       )
                     }
                     required
@@ -301,9 +308,7 @@ export default function LoginPage() {
               {/* SUBMIT */}
               <Button
                 type="submit"
-                disabled={
-                  loading
-                }
+                disabled={loading}
                 className="
                   w-full h-14 rounded-2xl
                   bg-gradient-to-r from-blue-600 to-purple-600
@@ -316,8 +321,8 @@ export default function LoginPage() {
                 <div className="flex items-center gap-3">
 
                   {loading
-                    ? 'Signing In...'
-                    : 'Sign In'}
+                    ? 'Creating Account...'
+                    : 'Create Account'}
 
                   {!loading && (
                     <ArrowRight className="w-5 h-5" />
@@ -334,14 +339,14 @@ export default function LoginPage() {
 
               <p className="text-muted-foreground">
 
-                Don&apos;t have an account?{' '}
+                Already have an account?{' '}
 
                 <Link
-                  href="/signup"
+                  href="/login"
                   className="font-bold text-primary hover:underline"
                 >
 
-                  Create Account
+                  Sign In
 
                 </Link>
 

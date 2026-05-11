@@ -15,6 +15,7 @@ import {
   LogOut,
   BookOpen,
   Sparkles,
+  Brain,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -56,6 +57,12 @@ export function DashboardSidebar({
       key: 'joinSession',
       href: '/dashboard/meetings',
       icon: Video,
+    },
+
+    {
+      key: 'Take Test',
+      href: '/placement',
+      icon: Brain,
     },
   ]
 

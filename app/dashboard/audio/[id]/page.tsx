@@ -2,42 +2,97 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
+
 import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { supabase } from '@/lib/supabaseClient'
 import { useLanguage } from '@/context/LanguageContext'
-import { Headphones, PlayCircle } from 'lucide-react'
+
+import {
+  Headphones,
+  PlayCircle,
+  CheckCircle2,
+  XCircle,
+  Trophy,
+  Brain,
+  Menu,
+} from 'lucide-react'
 
 export default function AudioPage() {
   const params = useParams()
   const id = params.id as string
 
-  const { language } = useLanguage()
+  const { language } =
+    useLanguage()
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [
+    sidebarOpen,
+    setSidebarOpen,
+  ] = useState(false)
 
-  const [exercise, setExercise] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [exercise, setExercise] =
+    useState<any>(null)
 
-  // 🔥 FETCH AUDIO
+  const [questions, setQuestions] =
+    useState<any[]>([])
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [
+    currentIndex,
+    setCurrentIndex,
+  ] = useState(0)
+
+  const [score, setScore] =
+    useState(0)
+
+  const [selected, setSelected] =
+    useState<string | null>(null)
+
+  const [finished, setFinished] =
+    useState(false)
+
+  // 🔥 FETCH
   useEffect(() => {
-    const fetchExercise = async () => {
-      const { data, error } = await supabase
-        .from('exercises')
-        .select('*')
-        .eq('id', id)
-        .single()
+    const fetchData =
+      async () => {
+        // EXERCISE
+        const {
+          data: exerciseData,
+        } = await supabase
+          .from('exercises')
+          .select('*')
+          .eq('id', id)
+          .single()
 
-      if (error) {
-        console.error(error)
+        // QUESTIONS
+        const {
+          data: questionsData,
+        } = await supabase
+          .from(
+            'quiz_questions'
+          )
+          .select('*')
+          .eq(
+            'exercise_id',
+            id
+          )
+
+        setExercise(
+          exerciseData
+        )
+
+        setQuestions(
+          questionsData || []
+        )
+
+        setLoading(false)
       }
 
-      setExercise(data)
-      setLoading(false)
-    }
-
-    fetchExercise()
+    fetchData()
   }, [id])
 
+  // 🔥 LOADING
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -46,6 +101,7 @@ export default function AudioPage() {
     )
   }
 
+  // 🔥 NOT FOUND
   if (!exercise) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -54,8 +110,47 @@ export default function AudioPage() {
     )
   }
 
+  const current =
+    questions[currentIndex]
+
+  // 🔥 ANSWER
+  const handleAnswer = (
+    answer: string
+  ) => {
+    if (selected) return
+
+    setSelected(answer)
+
+    let newScore = score
+
+    if (
+      answer ===
+      current.correct_answer
+    ) {
+      newScore++
+      setScore(newScore)
+    }
+
+    setTimeout(() => {
+      const next =
+        currentIndex + 1
+
+      if (
+        next >=
+        questions.length
+      ) {
+        setFinished(true)
+        return
+      }
+
+      setCurrentIndex(next)
+
+      setSelected(null)
+    }, 1000)
+  }
+
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
 
       {/* SIDEBAR */}
       <DashboardSidebar
@@ -65,115 +160,329 @@ export default function AudioPage() {
       />
 
       {/* MAIN */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 h-screen overflow-y-auto">
 
         {/* HEADER */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
+        <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border">
+
           <div className="max-w-5xl mx-auto px-6 py-6 flex items-center gap-4">
 
-            {/* MOBILE BUTTON */}
+            {/* MOBILE */}
             <button
-              onClick={() => setSidebarOpen(true)}
-              className="md:hidden text-2xl"
+              onClick={() =>
+                setSidebarOpen(true)
+              }
+              className="md:hidden w-12 h-12 rounded-2xl bg-white border shadow-sm flex items-center justify-center"
             >
-              ☰
+              <Menu className="w-6 h-6" />
             </button>
 
-            <h1 className="text-3xl font-bold">
-              Audio Lesson
-            </h1>
+            <div>
+
+              <h1 className="text-4xl font-black">
+                Audio Lesson
+              </h1>
+
+              <p className="text-muted-foreground mt-1">
+                Listening comprehension exercise
+              </p>
+
+            </div>
+
           </div>
         </div>
 
         {/* CONTENT */}
-        <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-6 py-10">
 
-          {/* HERO CARD */}
-          <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-3xl p-8 md:p-12 shadow-sm border border-border">
+          {/* HERO */}
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-[36px] p-10 text-white shadow-2xl overflow-hidden relative">
 
-            {/* TOP */}
-            <div className="flex flex-col md:flex-row md:items-center gap-8">
+            {/* BG */}
+            <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/20 blur-3xl" />
 
-              {/* ICON */}
-              <div className="flex justify-center md:justify-start">
-                <div className="bg-white/70 backdrop-blur-sm p-6 rounded-full shadow-sm">
-                  <Headphones className="w-16 h-16 text-purple-600" />
-                </div>
+            <div className="relative z-10">
+
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-5 py-2 rounded-2xl mb-6">
+
+                <PlayCircle className="w-4 h-4" />
+
+                Listening Practice
+
               </div>
 
-              {/* TEXT */}
-              <div className="flex-1">
+              <h2 className="text-5xl font-black leading-tight">
+                {exercise.title}
+              </h2>
 
-                <div className="inline-flex items-center gap-2 bg-white/60 px-4 py-2 rounded-full text-sm font-medium text-purple-700 mb-4">
-                  <PlayCircle className="w-4 h-4" />
-                  Listening Practice
+              <p className="text-white/80 text-xl mt-6 max-w-2xl leading-relaxed">
+                Listen carefully and answer the questions below.
+              </p>
+
+              {/* AUDIO */}
+              <div className="mt-10 bg-white rounded-[28px] p-6 text-black shadow-2xl">
+
+                <div className="flex items-center gap-4 mb-5">
+
+                  <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center">
+
+                    <Headphones className="w-7 h-7 text-purple-600" />
+
+                  </div>
+
+                  <div>
+
+                    <p className="font-bold text-lg">
+                      Audio Player
+                    </p>
+
+                    <p className="text-muted-foreground text-sm">
+                      Listen before answering
+                    </p>
+
+                  </div>
+
                 </div>
 
-                <h2 className="text-4xl font-bold text-foreground mb-4 leading-tight">
-                  {exercise.title}
-                </h2>
-
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  Improve your German listening comprehension by carefully listening to this lesson.
-                </p>
+                <audio
+                  controls
+                  className="w-full"
+                >
+                  <source
+                    src={
+                      exercise.file_url
+                    }
+                    type="audio/mpeg"
+                  />
+                </audio>
 
               </div>
 
             </div>
-
-            {/* AUDIO PLAYER */}
-            <div className="mt-10 bg-white rounded-2xl p-6 shadow-sm border border-border">
-
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-purple-100 p-3 rounded-full">
-                  <Headphones className="w-5 h-5 text-purple-600" />
-                </div>
-
-                <div>
-                  <p className="font-semibold text-foreground">
-                    Audio Player
-                  </p>
-
-                  <p className="text-sm text-muted-foreground">
-                    Press play to start listening
-                  </p>
-                </div>
-              </div>
-
-              <audio
-                controls
-                className="w-full"
-              >
-                <source
-                  src={exercise.file_url}
-                  type="audio/mpeg"
-                />
-
-                Your browser does not support audio playback.
-              </audio>
-
-            </div>
-
-            {/* TIP BOX */}
-            <div className="mt-6 bg-white/70 border border-white rounded-2xl p-5 flex items-start gap-4">
-
-              <div className="text-2xl">
-                💡
-              </div>
-
-              <div>
-                <p className="font-semibold mb-1">
-                  Listening Tip
-                </p>
-
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Try listening once without subtitles, then replay the audio and focus on pronunciation and keywords.
-                </p>
-              </div>
-
-            </div>
-
           </div>
+
+          {/* QUESTIONS */}
+          {questions.length >
+            0 && (
+            <div className="mt-8">
+
+              {/* RESULT */}
+              {finished ? (
+                <div className="bg-white rounded-[36px] border shadow-2xl p-10 text-center">
+
+                  <div className="w-28 h-28 rounded-[32px] bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center mx-auto shadow-2xl mb-8">
+
+                    <Trophy className="w-14 h-14 text-white" />
+
+                  </div>
+
+                  <h2 className="text-5xl font-black">
+                    Finished!
+                  </h2>
+
+                  <p className="text-muted-foreground text-xl mt-5">
+                    You scored
+                  </p>
+
+                  <p className="text-7xl font-black mt-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    {score} / {
+                      questions.length
+                    }
+                  </p>
+
+                </div>
+              ) : (
+                <div className="bg-white rounded-[36px] border shadow-2xl overflow-hidden">
+
+                  {/* TOP */}
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white">
+
+                    <div className="flex items-center justify-between gap-5">
+
+                      <div className="flex items-center gap-4">
+
+                        <div className="w-16 h-16 rounded-3xl bg-white/20 flex items-center justify-center">
+
+                          <Brain className="w-8 h-8" />
+
+                        </div>
+
+                        <div>
+
+                          <p className="text-white/70 text-sm">
+                            Question
+                          </p>
+
+                          <h3 className="text-4xl font-black">
+                            {
+                              currentIndex +
+                              1
+                            }
+                            /
+                            {
+                              questions.length
+                            }
+                          </h3>
+
+                        </div>
+
+                      </div>
+
+                      <div className="bg-white/20 px-5 py-3 rounded-2xl">
+
+                        <p className="font-bold">
+                          Score:{' '}
+                          {score}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    {/* PROGRESS */}
+                    <div className="mt-6 w-full h-4 rounded-full bg-white/20 overflow-hidden">
+
+                      <div
+                        className="h-full bg-white rounded-full transition-all"
+                        style={{
+                          width: `${
+                            ((currentIndex +
+                              1) /
+                              questions.length) *
+                            100
+                          }%`,
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+
+                  {/* BODY */}
+                  <div className="p-8">
+
+                    <h2 className="text-3xl font-black leading-relaxed mb-10">
+
+                      {
+                        current.question
+                      }
+
+                    </h2>
+
+                    <div className="grid gap-5">
+
+                      {[
+                        {
+                          key: 'A',
+                          value:
+                            current.option_a,
+                        },
+
+                        {
+                          key: 'B',
+                          value:
+                            current.option_b,
+                        },
+
+                        {
+                          key: 'C',
+                          value:
+                            current.option_c,
+                        },
+
+                        {
+                          key: 'D',
+                          value:
+                            current.option_d,
+                        },
+                      ].map(
+                        (
+                          option
+                        ) => {
+                          const isCorrect =
+                            option.key ===
+                            current.correct_answer
+
+                          const isSelected =
+                            selected ===
+                            option.key
+
+                          return (
+                            <button
+                              key={
+                                option.key
+                              }
+                              onClick={() =>
+                                handleAnswer(
+                                  option.key
+                                )
+                              }
+                              disabled={
+                                !!selected
+                              }
+                              className={`
+                                text-left rounded-[28px]
+                                border-2 p-6 transition-all
+                                ${
+                                  selected
+                                    ? isCorrect
+                                      ? 'border-green-500 bg-green-50'
+                                      : isSelected
+                                      ? 'border-red-500 bg-red-50'
+                                      : 'opacity-60'
+                                    : 'hover:border-purple-400 hover:bg-purple-50'
+                                }
+                              `}
+                            >
+
+                              <div className="flex items-center justify-between gap-5">
+
+                                <div className="flex items-center gap-5">
+
+                                  <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center font-black text-lg">
+
+                                    {
+                                      option.key
+                                    }
+
+                                  </div>
+
+                                  <p className="font-semibold text-lg">
+
+                                    {
+                                      option.value
+                                    }
+
+                                  </p>
+
+                                </div>
+
+                                {selected &&
+                                  isCorrect && (
+                                    <CheckCircle2 className="w-7 h-7 text-green-600" />
+                                  )}
+
+                                {selected &&
+                                  isSelected &&
+                                  !isCorrect && (
+                                    <XCircle className="w-7 h-7 text-red-600" />
+                                  )}
+
+                              </div>
+
+                            </button>
+                          )
+                        }
+                      )}
+
+                    </div>
+
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
 
         </div>
       </main>
