@@ -19,6 +19,7 @@ import {
   Mail,
   ShieldCheck,
   UserRound,
+  Trash2,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -63,6 +64,9 @@ export default function AdminProfilePage() {
   ] = useState(false)
 
   const [togglingBan, setTogglingBan] =
+    useState(false)
+
+  const [deletingUser, setDeletingUser] =
     useState(false)
 
   const [
@@ -321,6 +325,70 @@ export default function AdminProfilePage() {
       }, 3000)
     }
 
+  // 🔥 DELETE ACCOUNT
+  const handleDeleteUser =
+    async () => {
+      if (!userFound) return
+
+      const confirmDelete =
+        confirm(
+          `Are you sure you want to permanently delete ${userFound.email}?`
+        )
+
+      if (!confirmDelete)
+        return
+
+      setDeletingUser(true)
+
+      const response =
+        await fetch(
+          '/api/admin/delete-user',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+            },
+
+            body: JSON.stringify({
+              userId:
+                userFound.id,
+            }),
+          }
+        )
+
+      const data =
+        await response.json()
+
+      if (!response.ok) {
+        alert(
+          data.error ||
+            'Failed to delete account'
+        )
+
+        setDeletingUser(false)
+
+        return
+      }
+
+      setSuccessMessage(
+        '🗑️ Account deleted successfully'
+      )
+
+      setUserFound(null)
+
+      setProfileExists(false)
+
+      setEmail('')
+
+      setDeletingUser(false)
+
+      setTimeout(() => {
+        setSuccessMessage('')
+      }, 3000)
+    }
+
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
 
@@ -339,7 +407,6 @@ export default function AdminProfilePage() {
 
           <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
 
-            {/* LEFT */}
             <div className="flex items-center gap-4">
 
               <button
@@ -370,7 +437,6 @@ export default function AdminProfilePage() {
 
             </div>
 
-            {/* RIGHT */}
             <select
               value={language}
               onChange={(e) =>
@@ -434,7 +500,6 @@ export default function AdminProfilePage() {
               </p>
 
             </div>
-
           </div>
         </div>
 
@@ -705,24 +770,12 @@ export default function AdminProfilePage() {
                           px-5 bg-white
                         "
                       >
-                        <option value="A1">
-                          A1
-                        </option>
-                        <option value="A2">
-                          A2
-                        </option>
-                        <option value="B1">
-                          B1
-                        </option>
-                        <option value="B2">
-                          B2
-                        </option>
-                        <option value="C1">
-                          C1
-                        </option>
-                        <option value="C2">
-                          C2
-                        </option>
+                        <option value="A1">A1</option>
+                        <option value="A2">A2</option>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
                       </select>
 
                     </div>
@@ -901,6 +954,79 @@ export default function AdminProfilePage() {
                           : userFound.is_active
                           ? 'Deactivate Account'
                           : 'Activate Account'}
+
+                      </div>
+
+                    </Button>
+
+                  </div>
+                </div>
+
+                {/* DELETE */}
+                <div className="bg-white rounded-[32px] border shadow-xl overflow-hidden">
+
+                  <div className="bg-gradient-to-r from-black to-red-700 p-7 text-white">
+
+                    <div className="flex items-center gap-4">
+
+                      <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+
+                        <Trash2 className="w-7 h-7" />
+
+                      </div>
+
+                      <div>
+
+                        <h3 className="text-2xl font-black">
+                          Delete Account
+                        </h3>
+
+                        <p className="text-white/80 mt-1">
+                          Permanently remove this user
+                        </p>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div className="p-7 space-y-6">
+
+                    <div className="rounded-2xl p-5 border bg-red-50 border-red-200">
+
+                      <p className="font-bold text-lg text-red-700">
+                        Dangerous Action
+                      </p>
+
+                      <p className="text-sm text-red-600 mt-2">
+                        This action permanently deletes the account
+                        and cannot be undone.
+                      </p>
+
+                    </div>
+
+                    <Button
+                      onClick={
+                        handleDeleteUser
+                      }
+                      disabled={
+                        deletingUser
+                      }
+                      className="
+                        w-full h-14 rounded-2xl
+                        bg-gradient-to-r from-black to-red-700
+                        hover:opacity-90
+                        text-white font-bold shadow-lg
+                      "
+                    >
+
+                      <div className="flex items-center gap-2">
+
+                        <Trash2 className="w-5 h-5" />
+
+                        {deletingUser
+                          ? 'Deleting...'
+                          : 'Delete Account'}
 
                       </div>
 
