@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input'
 import { supabase } from '@/lib/supabaseClient'
 
 import {
-  GraduationCap,
   Sparkles,
   Mail,
   Lock,
@@ -72,30 +71,92 @@ export default function SignupPage() {
     setLoading(true)
 
     // 🔥 CREATE ACCOUNT
-    const { error } =
+    const {
+      data,
+      error,
+    } =
       await supabase.auth.signUp({
         email,
         password,
-
-        options: {
-          emailRedirectTo:
-            undefined,
-        },
       })
-
-    setLoading(false)
 
     if (error) {
       setError(error.message)
+
+      setLoading(false)
+
       return
     }
 
+    // 🔥 AUTO BAN USER
+    if (data.user) {
+      const banResponse =
+        await fetch(
+          '/api/admin/toggle-user-ban',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+            },
+
+            body: JSON.stringify({
+              userId:
+                data.user.id,
+
+              banned: true,
+            }),
+          }
+        )
+
+      const banData =
+        await banResponse.json()
+
+      if (!banResponse.ok) {
+        console.error(
+          banData.error
+        )
+
+        setError(
+          'Failed to disable account'
+        )
+
+        setLoading(false)
+
+        return
+      }
+
+      // 🔥 CREATE PROFILE
+      const {
+        error: profileError,
+      } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: data.user.id,
+            is_admin: false,
+          },
+        ])
+
+      if (profileError) {
+        console.error(
+          profileError
+        )
+      }
+
+      // 🔥 FORCE LOGOUT
+      await supabase.auth.signOut()
+    }
+
+    setLoading(false)
+
     setSuccess(true)
 
-    // OPTIONAL REDIRECT
+    // REDIRECT
     setTimeout(() => {
       router.push('/login')
-    }, 2500)
+    }, 3000)
   }
 
   // 🔥 SUCCESS
@@ -126,8 +187,8 @@ export default function SignupPage() {
                 </h1>
 
                 <p className="text-white/80 text-lg mt-5 leading-relaxed max-w-md mx-auto">
-                  Your account was created successfully.
-                  An admin will now configure your profile and level.
+                  Your account is awaiting admin approval.
+                  You will be able to log in once activated.
                 </p>
 
               </div>
@@ -137,11 +198,11 @@ export default function SignupPage() {
             {/* BOTTOM */}
             <div className="p-10 text-center">
 
-              <div className="inline-flex items-center gap-3 bg-green-100 text-green-700 px-5 py-3 rounded-2xl font-semibold">
+              <div className="inline-flex items-center gap-3 bg-yellow-100 text-yellow-700 px-5 py-3 rounded-2xl font-semibold">
 
                 <Sparkles className="w-5 h-5" />
 
-                Redirecting to login...
+                Waiting for activation
 
               </div>
 
