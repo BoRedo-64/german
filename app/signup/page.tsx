@@ -88,46 +88,8 @@ export default function SignupPage() {
       return
     }
 
-    // 🔥 AUTO BAN USER
+    // 🔥 CREATE PROFILE
     if (data.user) {
-      const banResponse =
-        await fetch(
-          '/api/admin/toggle-user-ban',
-          {
-            method: 'POST',
-
-            headers: {
-              'Content-Type':
-                'application/json',
-            },
-
-            body: JSON.stringify({
-              userId:
-                data.user.id,
-
-              banned: true,
-            }),
-          }
-        )
-
-      const banData =
-        await banResponse.json()
-
-      if (!banResponse.ok) {
-        console.error(
-          banData.error
-        )
-
-        setError(
-          'Failed to disable account'
-        )
-
-        setLoading(false)
-
-        return
-      }
-
-      // 🔥 CREATE PROFILE
       const {
         error: profileError,
       } = await supabase
@@ -136,6 +98,7 @@ export default function SignupPage() {
           {
             id: data.user.id,
             is_admin: false,
+            // is_active automatically false by default
           },
         ])
 

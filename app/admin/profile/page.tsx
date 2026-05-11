@@ -10,7 +10,6 @@ import { supabase } from '@/lib/supabaseClient'
 
 import {
   Search,
-  Shield,
   User,
   Lock,
   Ban,
@@ -111,8 +110,6 @@ export default function AdminProfilePage() {
       return
     }
 
-    setUserFound(data.user)
-
     const { data: profile } =
       await supabase
         .from('profiles')
@@ -135,6 +132,12 @@ export default function AdminProfilePage() {
         level:
           profile.level || 'A1',
       })
+
+      setUserFound({
+        ...data.user,
+        is_active:
+          profile.is_active,
+      })
     } else {
       setProfileExists(false)
 
@@ -142,6 +145,11 @@ export default function AdminProfilePage() {
         first_name: '',
         last_name: '',
         level: 'A1',
+      })
+
+      setUserFound({
+        ...data.user,
+        is_active: false,
       })
     }
 
@@ -171,6 +179,9 @@ export default function AdminProfilePage() {
               profileData.level,
 
             is_admin: false,
+
+            is_active:
+              userFound.is_active,
           })
 
       if (error) {
@@ -260,41 +271,30 @@ export default function AdminProfilePage() {
 
       const confirmAction =
         confirm(
-          userFound.banned
-            ? 'Reactivate this account?'
-            : 'Deactivate this account?'
+          userFound.is_active
+            ? 'Deactivate this account?'
+            : 'Activate this account?'
         )
 
       if (!confirmAction) return
 
       setTogglingBan(true)
 
-      const response =
-        await fetch(
-          '/api/admin/toggle-user-ban',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type':
-                'application/json',
-            },
-            body: JSON.stringify({
-              userId:
-                userFound.id,
+      const { error } =
+        await supabase
+          .from('profiles')
+          .update({
+            is_active:
+              !userFound.is_active,
+          })
+          .eq(
+            'id',
+            userFound.id
+          )
 
-              banned:
-                !userFound.banned,
-            }),
-          }
-        )
-
-      const data =
-        await response.json()
-
-      if (!response.ok) {
+      if (error) {
         alert(
-          data.error ||
-            'Failed to update account'
+          'Failed to update account'
         )
 
         setTogglingBan(false)
@@ -304,14 +304,14 @@ export default function AdminProfilePage() {
 
       setUserFound({
         ...userFound,
-        banned:
-          !userFound.banned,
+        is_active:
+          !userFound.is_active,
       })
 
       setSuccessMessage(
-        userFound.banned
-          ? '✅ Account reactivated'
-          : '🚫 Account deactivated'
+        userFound.is_active
+          ? '🚫 Account deactivated'
+          : '✅ Account activated'
       )
 
       setTogglingBan(false)
@@ -342,7 +342,6 @@ export default function AdminProfilePage() {
             {/* LEFT */}
             <div className="flex items-center gap-4">
 
-              {/* MOBILE */}
               <button
                 onClick={() =>
                   setSidebarOpen(true)
@@ -357,21 +356,18 @@ export default function AdminProfilePage() {
                 <Menu className="w-6 h-6" />
               </button>
 
-              <div className="flex items-center gap-4">
+              <div>
 
-                <div>
+                <h1 className="text-4xl font-black tracking-tight">
+                  User Management
+                </h1>
 
-                  <h1 className="text-4xl font-black tracking-tight">
-                    User Management
-                  </h1>
-
-                  <p className="text-muted-foreground mt-1">
-                    Manage student profiles and accounts
-                  </p>
-
-                </div>
+                <p className="text-muted-foreground mt-1">
+                  Manage student profiles and accounts
+                </p>
 
               </div>
+
             </div>
 
             {/* RIGHT */}
@@ -408,7 +404,6 @@ export default function AdminProfilePage() {
 
           <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-10 text-white shadow-2xl">
 
-            {/* BG */}
             <div className="absolute inset-0 opacity-20">
 
               <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white blur-3xl" />
@@ -439,6 +434,7 @@ export default function AdminProfilePage() {
               </p>
 
             </div>
+
           </div>
         </div>
 
@@ -473,7 +469,6 @@ export default function AdminProfilePage() {
           {/* SEARCH */}
           <div className="bg-white rounded-[32px] border shadow-xl overflow-hidden">
 
-            {/* TOP */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-7 text-white">
 
               <div className="flex items-center gap-4">
@@ -499,7 +494,6 @@ export default function AdminProfilePage() {
               </div>
             </div>
 
-            {/* CONTENT */}
             <div className="p-8">
 
               <div className="flex flex-col md:flex-row gap-4">
@@ -553,12 +547,6 @@ export default function AdminProfilePage() {
                 {/* USER CARD */}
                 <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white shadow-2xl">
 
-                  <div className="absolute inset-0 opacity-20">
-
-                    <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white blur-3xl" />
-
-                  </div>
-
                   <div className="relative z-10 flex items-center justify-between flex-wrap gap-6">
 
                     <div className="flex items-center gap-5">
@@ -595,14 +583,14 @@ export default function AdminProfilePage() {
 
                       <div
                         className={`px-5 py-3 rounded-2xl text-sm font-semibold backdrop-blur-md ${
-                          userFound.banned
-                            ? 'bg-red-500/30'
-                            : 'bg-green-500/30'
+                          userFound.is_active
+                            ? 'bg-green-500/30'
+                            : 'bg-red-500/30'
                         }`}
                       >
-                        {userFound.banned
-                          ? '🚫 Deactivated'
-                          : '✅ Active'}
+                        {userFound.is_active
+                          ? '✅ Active'
+                          : '🚫 Inactive'}
                       </div>
 
                     </div>
@@ -643,7 +631,6 @@ export default function AdminProfilePage() {
 
                     <div className="grid md:grid-cols-2 gap-6">
 
-                      {/* FIRST */}
                       <div className="space-y-3">
 
                         <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
@@ -668,7 +655,6 @@ export default function AdminProfilePage() {
 
                       </div>
 
-                      {/* LAST */}
                       <div className="space-y-3">
 
                         <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
@@ -695,7 +681,6 @@ export default function AdminProfilePage() {
 
                     </div>
 
-                    {/* LEVEL */}
                     <div className="space-y-3">
 
                       <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
@@ -718,34 +703,26 @@ export default function AdminProfilePage() {
                           w-full h-14 rounded-2xl
                           border-2 border-border
                           px-5 bg-white
-                          focus:outline-none focus:ring-2 focus:ring-blue-500
                         "
                       >
-
                         <option value="A1">
                           A1
                         </option>
-
                         <option value="A2">
                           A2
                         </option>
-
                         <option value="B1">
                           B1
                         </option>
-
                         <option value="B2">
                           B2
                         </option>
-
                         <option value="C1">
                           C1
                         </option>
-
                         <option value="C2">
                           C2
                         </option>
-
                       </select>
 
                     </div>
@@ -876,23 +853,23 @@ export default function AdminProfilePage() {
                       className={`
                         rounded-2xl p-5 border
                         ${
-                          userFound.banned
-                            ? 'bg-red-50 border-red-200'
-                            : 'bg-green-50 border-green-200'
+                          userFound.is_active
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
                         }
                       `}
                     >
 
                       <p className="font-bold text-lg">
-                        {userFound.banned
-                          ? 'Account Disabled'
-                          : 'Account Active'}
+                        {userFound.is_active
+                          ? 'Account Active'
+                          : 'Account Disabled'}
                       </p>
 
                       <p className="text-sm text-muted-foreground mt-2">
-                        {userFound.banned
-                          ? 'This user cannot log in.'
-                          : 'User can access the platform normally.'}
+                        {userFound.is_active
+                          ? 'User can access the platform normally.'
+                          : 'This user cannot log in.'}
                       </p>
 
                     </div>
@@ -908,9 +885,9 @@ export default function AdminProfilePage() {
                         w-full h-14 rounded-2xl
                         text-white font-bold shadow-lg
                         ${
-                          userFound.banned
-                            ? 'bg-gradient-to-r from-green-600 to-emerald-600'
-                            : 'bg-gradient-to-r from-red-500 to-pink-500'
+                          userFound.is_active
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500'
+                            : 'bg-gradient-to-r from-green-600 to-emerald-600'
                         }
                       `}
                     >
@@ -921,9 +898,9 @@ export default function AdminProfilePage() {
 
                         {togglingBan
                           ? 'Updating...'
-                          : userFound.banned
-                          ? 'Reactivate Account'
-                          : 'Deactivate Account'}
+                          : userFound.is_active
+                          ? 'Deactivate Account'
+                          : 'Activate Account'}
 
                       </div>
 

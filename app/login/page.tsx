@@ -54,13 +54,13 @@ export default function LoginPage() {
           return
         }
 
-        // 🔐 CHECK ROLE
+        // 🔐 CHECK PROFILE
         const {
           data: profile,
         } = await supabase
           .from('profiles')
           .select(
-            'is_admin'
+            'is_admin, is_active'
           )
           .eq(
             'id',
@@ -68,6 +68,18 @@ export default function LoginPage() {
           )
           .single()
 
+        // 🔥 NOT ACTIVE
+        if (
+          !profile?.is_active
+        ) {
+          await supabase.auth.signOut()
+
+          setCheckingAuth(false)
+
+          return
+        }
+
+        // 🔥 REDIRECT
         if (
           profile?.is_admin
         ) {
@@ -91,6 +103,7 @@ export default function LoginPage() {
     e.preventDefault()
 
     setLoading(true)
+
     setError(null)
 
     const {
@@ -117,13 +130,13 @@ export default function LoginPage() {
     const user =
       data.user
 
-    // 🔐 CHECK ADMIN
+    // 🔐 CHECK PROFILE
     const {
       data: profile,
     } = await supabase
       .from('profiles')
       .select(
-        'is_admin'
+        'is_admin, is_active'
       )
       .eq(
         'id',
@@ -131,6 +144,22 @@ export default function LoginPage() {
       )
       .single()
 
+    // 🔥 ACCOUNT NOT ACTIVE
+    if (
+      !profile?.is_active
+    ) {
+      await supabase.auth.signOut()
+
+      setError(
+        'Please wait for admin activation'
+      )
+
+      setLoading(false)
+
+      return
+    }
+
+    // 🔥 REDIRECT
     if (
       profile?.is_admin
     ) {

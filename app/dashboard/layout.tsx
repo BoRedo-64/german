@@ -10,36 +10,80 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
+
+  const [loading, setLoading] =
+    useState(true)
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser()
+    const checkUser =
+      async () => {
+        const { data } =
+          await supabase.auth.getUser()
 
-      const user = data.user
+        const user =
+          data.user
 
-      // ❌ not logged in
-      if (!user) {
-        router.replace('/login')
-        return
+        // ❌ NOT LOGGED IN
+        if (!user) {
+          router.replace(
+            '/login'
+          )
+
+          return
+        }
+
+        // 🔐 GET PROFILE
+        const {
+          data: profile,
+        } = await supabase
+          .from('profiles')
+          .select(
+            'is_admin, is_active'
+          )
+          .eq(
+            'id',
+            user.id
+          )
+          .single()
+
+        // ❌ NO PROFILE
+        if (!profile) {
+          await supabase.auth.signOut()
+
+          router.replace(
+            '/login'
+          )
+
+          return
+        }
+
+        // ❌ INACTIVE USER
+        if (
+          !profile.is_active
+        ) {
+          await supabase.auth.signOut()
+
+          router.replace(
+            '/login'
+          )
+
+          return
+        }
+
+        // 👑 ADMIN
+        if (
+          profile.is_admin
+        ) {
+          router.replace(
+            '/admin/exercises'
+          )
+
+          return
+        }
+
+        // ✅ NORMAL USER
+        setLoading(false)
       }
-
-      // 🔐 get role
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single()
-
-      // 👑 admin → redirect away
-      if (profile?.is_admin) {
-        router.replace('/admin/exercises')
-        return
-      }
-
-      // ✅ normal user
-      setLoading(false)
-    }
 
     checkUser()
   }, [router])
@@ -47,10 +91,19 @@ export default function DashboardLayout({
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
+
         <div className="text-center">
-          <div className="text-4xl mb-4">⏳</div>
-          <p className="text-foreground">Loading...</p>
+
+          <div className="text-4xl mb-4">
+            ⏳
+          </div>
+
+          <p className="text-foreground">
+            Loading...
+          </p>
+
         </div>
+
       </div>
     )
   }
