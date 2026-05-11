@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Menu,
   Trash2,
+  UploadCloud,
+  Headphones,
 } from 'lucide-react'
 
 type Language = 'en' | 'fr' | 'ar'
@@ -31,6 +33,17 @@ export default function AdminQuizPage() {
 
   const [level, setLevel] =
     useState('A1')
+
+  const [type, setType] =
+    useState<'quiz' | 'audio'>(
+      'quiz'
+    )
+
+  const [fileUrl, setFileUrl] =
+    useState('')
+
+  const [uploading, setUploading] =
+    useState(false)
 
   const [questions, setQuestions] =
     useState([
@@ -90,12 +103,65 @@ export default function AdminQuizPage() {
     setQuestions(updated)
   }
 
+  // 🔥 AUDIO UPLOAD
+  const handleAudioUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file =
+      e.target.files?.[0]
+
+    if (!file) return
+
+    setUploading(true)
+
+    try {
+      const fileName = `${Date.now()}-${
+        file.name
+      }`
+
+      const { error } =
+        await supabase.storage
+          .from('audio')
+          .upload(fileName, file)
+
+      if (error) throw error
+
+      const { data } =
+        supabase.storage
+          .from('audio')
+          .getPublicUrl(
+            fileName
+          )
+
+      setFileUrl(
+        data.publicUrl
+      )
+    } catch (err) {
+      console.error(err)
+
+      alert(
+        'Error uploading audio ❌'
+      )
+    } finally {
+      setUploading(false)
+    }
+  }
+
   // 🔥 SUBMIT
   const handleSubmit = async () => {
     if (!title)
       return alert(
         'Title required'
       )
+
+    if (
+      type === 'audio' &&
+      !fileUrl
+    ) {
+      return alert(
+        'Please upload audio file'
+      )
+    }
 
     setLoading(true)
 
@@ -109,8 +175,12 @@ export default function AdminQuizPage() {
         .insert([
           {
             title,
-            type: 'quiz',
+            type,
             level,
+            file_url:
+              type === 'audio'
+                ? fileUrl
+                : null,
           },
         ])
         .select()
@@ -157,7 +227,11 @@ export default function AdminQuizPage() {
         throw qError
 
       alert(
-        'Quiz created successfully ✅'
+        `${
+          type === 'audio'
+            ? 'Audio quiz'
+            : 'Quiz'
+        } created successfully ✅`
       )
 
       router.push(
@@ -323,7 +397,7 @@ export default function AdminQuizPage() {
 
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
 
               {/* TITLE */}
               <div className="space-y-3">
@@ -399,7 +473,131 @@ export default function AdminQuizPage() {
 
               </div>
 
+              {/* TYPE */}
+              <div className="space-y-3">
+
+                <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                  Exercise Type
+                </label>
+
+                <select
+                  value={type}
+                  onChange={(e) => {
+                    setType(
+                      e.target.value as
+                        | 'quiz'
+                        | 'audio'
+                    )
+
+                    setFileUrl('')
+                  }}
+                  className="
+                    w-full h-14 rounded-2xl
+                    border-2 border-border
+                    px-5 bg-white
+                    focus:outline-none focus:ring-2 focus:ring-blue-500
+                  "
+                >
+
+                  <option value="quiz">
+                    Quiz
+                  </option>
+
+                  <option value="audio">
+                    Audio Quiz
+                  </option>
+
+                </select>
+
+              </div>
+
             </div>
+
+            {/* AUDIO SECTION */}
+            {type === 'audio' && (
+              <div className="mt-8">
+
+                <div className="space-y-4">
+
+                  <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                    Audio Upload
+                  </label>
+
+                  <div className="rounded-[28px] border-2 border-dashed border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-10 text-center">
+
+                    <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-xl">
+
+                      <UploadCloud className="w-10 h-10 text-white" />
+
+                    </div>
+
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      onChange={
+                        handleAudioUpload
+                      }
+                      className="mb-6"
+                    />
+
+                    {uploading ? (
+                      <div className="space-y-3">
+
+                        <p className="font-semibold text-blue-700">
+                          Uploading audio...
+                        </p>
+
+                        <div className="w-full bg-blue-100 rounded-full h-3 overflow-hidden">
+
+                          <div className="bg-blue-600 h-3 w-2/3 animate-pulse rounded-full" />
+
+                        </div>
+
+                      </div>
+                    ) : fileUrl ? (
+                      <div className="space-y-5">
+
+                        <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-5 py-3 rounded-2xl font-semibold">
+
+                          <Headphones className="w-5 h-5" />
+
+                          Audio uploaded successfully
+
+                        </div>
+
+                        <audio
+                          controls
+                          className="w-full"
+                        >
+
+                          <source
+                            src={fileUrl}
+                          />
+
+                        </audio>
+
+                      </div>
+                    ) : (
+                      <div>
+
+                        <p className="font-semibold text-foreground">
+                          Upload MP3 audio
+                        </p>
+
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Listening exercises supported
+                        </p>
+
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
           </div>
 
           {/* QUESTIONS */}
@@ -618,7 +816,10 @@ export default function AdminQuizPage() {
             {/* CREATE QUIZ */}
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={
+                loading ||
+                uploading
+              }
               className="
                 h-14 px-10 rounded-2xl
                 bg-gradient-to-r from-blue-600 to-purple-600

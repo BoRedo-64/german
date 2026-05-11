@@ -373,25 +373,29 @@ export default function AudioPage() {
 
                       {[
                         {
-                          key: 'A',
+                          key: 'a',
+                          label: 'A',
                           value:
                             current.option_a,
                         },
 
                         {
-                          key: 'B',
+                          key: 'b',
+                          label: 'B',
                           value:
                             current.option_b,
                         },
 
                         {
-                          key: 'C',
+                          key: 'c',
+                          label: 'C',
                           value:
                             current.option_c,
                         },
 
                         {
-                          key: 'D',
+                          key: 'd',
+                          label: 'D',
                           value:
                             current.option_d,
                         },
@@ -442,7 +446,7 @@ export default function AudioPage() {
                                   <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center font-black text-lg">
 
                                     {
-                                      option.key
+                                      option.label
                                     }
 
                                   </div>
