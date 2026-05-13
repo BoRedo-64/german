@@ -56,9 +56,15 @@ export function AdminSidebar({
     icon: PlusCircle,
   },
 
-    {
+  {
     key: 'Delete Exercice',
     href: '/admin/delete-exercice',
+    icon: Trash,
+  },
+
+  {
+    key: 'Delete Test Question',
+    href: '/admin/delete-test',
     icon: Trash,
   },
 
