@@ -430,6 +430,102 @@ const fr = {
 
   'meetings.empty.desc':
     "Votre professeur n’a pas encore attribué de sessions en direct.",
+
+    'profile.title':
+  'Mon profil',
+
+'profile.subtitle':
+  'Gérez votre compte et vos paramètres de sécurité',
+
+'profile.student':
+  'Étudiant Deutschly',
+
+'profile.hero.desc':
+  "Continuez votre parcours d'apprentissage de l'allemand 🇩🇪",
+
+'profile.currentLevel':
+  'Niveau actuel',
+
+'profile.passwordUpdated':
+  'Mot de passe mis à jour',
+
+'profile.passwordUpdatedDesc':
+  'Votre mot de passe a été modifié avec succès.',
+
+'profile.accountInfo':
+  'Informations du compte',
+
+'profile.accountInfoDesc':
+  "Les détails de votre profil et votre niveau d'apprentissage",
+
+'profile.email':
+  'Adresse e-mail',
+
+'profile.germanLevel':
+  'Niveau allemand',
+
+'profile.security':
+  'Sécurité',
+
+'profile.securityDesc':
+  'Mettez à jour votre mot de passe en toute sécurité',
+
+'profile.changePassword':
+  'Changer le mot de passe',
+
+'profile.newPassword':
+  'Nouveau mot de passe',
+
+'profile.confirmPassword':
+  'Confirmer le mot de passe',
+
+'profile.enterPassword':
+  'Entrez un nouveau mot de passe',
+
+'profile.confirmNewPassword':
+  'Confirmez le nouveau mot de passe',
+
+'profile.updating':
+  'Mise à jour...',
+
+'profile.savePassword':
+  'Enregistrer le mot de passe',
+
+'profile.cancel':
+  'Annuler',
+
+'profile.summary':
+  'Résumé du profil',
+
+'profile.summaryDesc':
+  "Votre statut d'apprentissage actuel",
+
+'profile.studentName':
+  "Nom de l'étudiant",
+
+'profile.accountStatus':
+  'Statut du compte',
+
+'profile.active':
+  'Actif',
+
+'profile.keepGoing':
+  'Continuez 🚀',
+
+'profile.keepGoingDesc':
+  "La pratique quotidienne et la régularité sont les moyens les plus rapides de maîtriser l'allemand.",
+
+'profile.passwordShort':
+  'Le mot de passe doit contenir au moins 6 caractères',
+
+'profile.passwordMismatch':
+  'Les mots de passe ne correspondent pas',
+
+'profile.passwordError':
+  'Erreur lors de la mise à jour du mot de passe ❌',
+
+'Logout': 'Déconnexion',
+takeTest: 'Passer un test',
 }
 
 export default fr

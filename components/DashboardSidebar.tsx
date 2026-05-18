@@ -60,7 +60,7 @@ export function DashboardSidebar({
     },
 
     {
-      key: 'Take Test',
+      key: 'takeTest',
       href: '/placement',
       icon: Brain,
     },
@@ -283,7 +283,7 @@ export function DashboardSidebar({
               {t(
                 'Logout',
                 language
-              ) || 'Logout'}
+              )}
             </span>
 
           </button>

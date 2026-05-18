@@ -6,6 +6,7 @@ import { DashboardSidebar } from '@/components/DashboardSidebar'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/context/LanguageContext'
+import { t } from '@/lib/translations'
 
 import {
   User,
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   const { language, setLanguage } =
     useLanguage()
 
+    const isRTL = language === 'ar'
   const [sidebarOpen, setSidebarOpen] =
     useState(false)
 
@@ -91,7 +93,10 @@ export default function ProfilePage() {
         password.length < 6
       ) {
         return alert(
-          'Password must be at least 6 characters'
+          t(
+            'profile.passwordShort',
+            language
+          )
         )
       }
 
@@ -100,7 +105,10 @@ export default function ProfilePage() {
         confirmPassword
       ) {
         return alert(
-          'Passwords do not match'
+          t(
+            'profile.passwordMismatch',
+            language
+          )
         )
       }
 
@@ -119,7 +127,10 @@ export default function ProfilePage() {
         console.error(error)
 
         alert(
-          'Error updating password ❌'
+          t(
+            'profile.passwordError',
+            language
+          )
         )
       } else {
         setSuccess(true)
@@ -135,7 +146,10 @@ export default function ProfilePage() {
     }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+    >
 
       {/* SIDEBAR */}
       <DashboardSidebar
@@ -153,7 +167,11 @@ export default function ProfilePage() {
           <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
 
             {/* LEFT */}
-            <div className="flex items-center gap-4">
+            <div
+              className={`flex items-center gap-4 ${
+                isRTL ? 'flex-row-reverse' : ''
+              }`}
+            >
 
               {/* MOBILE BTN */}
               <button
@@ -175,11 +193,17 @@ export default function ProfilePage() {
                 <div>
 
                   <h1 className="text-4xl font-black tracking-tight">
-                    My Profile
+                    {t(
+                      'profile.title',
+                      language
+                    )}
                   </h1>
 
                   <p className="text-muted-foreground mt-1">
-                    Manage your account and security settings
+                    {t(
+                      'profile.subtitle',
+                      language
+                    )}
                   </p>
 
                 </div>
@@ -248,7 +272,10 @@ export default function ProfilePage() {
                     <Sparkles className="w-4 h-4" />
 
                     <span className="text-sm font-semibold">
-                      Deutschly Student
+                      {t(
+                        'profile.student',
+                        language
+                      )}
                     </span>
 
                   </div>
@@ -259,7 +286,10 @@ export default function ProfilePage() {
                   </h2>
 
                   <p className="text-white/80 text-lg mt-3">
-                    Continue your German learning journey 🇩🇪
+                    {t(
+                      'profile.hero.desc',
+                      language
+                    )}
                   </p>
 
                 </div>
@@ -280,7 +310,10 @@ export default function ProfilePage() {
                   <div>
 
                     <p className="text-white/70 text-sm">
-                      Current Level
+                      {t(
+                        'profile.currentLevel',
+                        language
+                      )}
                     </p>
 
                     <h3 className="text-4xl font-black mt-1">
@@ -313,11 +346,17 @@ export default function ProfilePage() {
               <div>
 
                 <p className="font-bold text-lg">
-                  Password Updated
+                  {t(
+                    'profile.passwordUpdated',
+                    language
+                  )}
                 </p>
 
                 <p className="text-sm opacity-80">
-                  Your password has been changed successfully.
+                  {t(
+                    'profile.passwordUpdatedDesc',
+                    language
+                  )}
                 </p>
 
               </div>
@@ -347,11 +386,17 @@ export default function ProfilePage() {
                     <div>
 
                       <h3 className="text-3xl font-black">
-                        Account Information
+                        {t(
+                          'profile.accountInfo',
+                          language
+                        )}
                       </h3>
 
                       <p className="text-white/80 mt-1">
-                        Your profile details and learning level
+                        {t(
+                          'profile.accountInfoDesc',
+                          language
+                        )}
                       </p>
 
                     </div>
@@ -376,7 +421,10 @@ export default function ProfilePage() {
                       <div>
 
                         <p className="text-sm text-muted-foreground">
-                          Email Address
+                          {t(
+                            'profile.email',
+                            language
+                          )}
                         </p>
 
                         <p className="font-semibold mt-1 break-all">
@@ -404,7 +452,10 @@ export default function ProfilePage() {
                       <div>
 
                         <p className="text-sm text-muted-foreground">
-                          German Level
+                          {t(
+                            'profile.germanLevel',
+                            language
+                          )}
                         </p>
 
                         <p className="font-semibold mt-1">
@@ -438,11 +489,17 @@ export default function ProfilePage() {
                     <div>
 
                       <h3 className="text-3xl font-black">
-                        Security
+                        {t(
+                          'profile.security',
+                          language
+                        )}
                       </h3>
 
                       <p className="text-white/80 mt-1">
-                        Update your account password securely
+                        {t(
+                          'profile.securityDesc',
+                          language
+                        )}
                       </p>
 
                     </div>
@@ -466,7 +523,10 @@ export default function ProfilePage() {
                         border-2 font-semibold
                       "
                     >
-                      Change Password
+                      {t(
+                        'profile.changePassword',
+                        language
+                      )}
                     </Button>
                   ) : (
                     <div className="space-y-5 max-w-lg">
@@ -474,12 +534,18 @@ export default function ProfilePage() {
                       <div className="space-y-3">
 
                         <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                          New Password
+                          {t(
+                            'profile.newPassword',
+                            language
+                          )}
                         </label>
 
                         <input
                           type="password"
-                          placeholder="Enter new password"
+                          placeholder={t(
+                            'profile.enterPassword',
+                            language
+                          )}
                           className="
                             w-full h-14 rounded-2xl
                             border-2 border-border
@@ -500,12 +566,18 @@ export default function ProfilePage() {
                       <div className="space-y-3">
 
                         <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                          Confirm Password
+                          {t(
+                            'profile.confirmPassword',
+                            language
+                          )}
                         </label>
 
                         <input
                           type="password"
-                          placeholder="Confirm new password"
+                          placeholder={t(
+                            'profile.confirmNewPassword',
+                            language
+                          )}
                           className="
                             w-full h-14 rounded-2xl
                             border-2 border-border
@@ -542,8 +614,14 @@ export default function ProfilePage() {
                           "
                         >
                           {loading
-                            ? 'Updating...'
-                            : 'Save Password'}
+                            ? t(
+                                'profile.updating',
+                                language
+                              )
+                            : t(
+                                'profile.savePassword',
+                                language
+                              )}
                         </Button>
 
                         <Button
@@ -555,7 +633,10 @@ export default function ProfilePage() {
                           }
                           className="h-14 px-8 rounded-2xl border-2"
                         >
-                          Cancel
+                          {t(
+                            'profile.cancel',
+                            language
+                          )}
                         </Button>
 
                       </div>
@@ -577,11 +658,17 @@ export default function ProfilePage() {
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-7 text-white">
 
                   <h3 className="text-2xl font-black">
-                    Profile Summary
+                    {t(
+                      'profile.summary',
+                      language
+                    )}
                   </h3>
 
                   <p className="text-white/80 mt-1">
-                    Your current learning status
+                    {t(
+                      'profile.summaryDesc',
+                      language
+                    )}
                   </p>
 
                 </div>
@@ -589,12 +676,18 @@ export default function ProfilePage() {
                 <div className="p-7 space-y-5">
 
                   <SummaryCard
-                    title="Student Name"
+                    title={t(
+                      'profile.studentName',
+                      language
+                    )}
                     value={`${user?.first_name || ''} ${user?.last_name || ''}`}
                   />
 
                   <SummaryCard
-                    title="Current Level"
+                    title={t(
+                      'profile.currentLevel',
+                      language
+                    )}
                     value={
                       user?.level ||
                       'A1'
@@ -602,8 +695,14 @@ export default function ProfilePage() {
                   />
 
                   <SummaryCard
-                    title="Account Status"
-                    value="Active"
+                    title={t(
+                      'profile.accountStatus',
+                      language
+                    )}
+                    value={t(
+                      'profile.active',
+                      language
+                    )}
                   />
 
                 </div>
@@ -623,12 +722,17 @@ export default function ProfilePage() {
                   </div>
 
                   <h3 className="text-3xl font-black leading-tight">
-                    Keep Going 🚀
+                    {t(
+                      'profile.keepGoing',
+                      language
+                    )}
                   </h3>
 
                   <p className="text-white/80 mt-4 leading-relaxed">
-                    Daily practice and consistency are the fastest
-                    ways to master German.
+                    {t(
+                      'profile.keepGoingDesc',
+                      language
+                    )}
                   </p>
 
                 </div>

@@ -430,6 +430,102 @@ const ar = {
 
   'meetings.empty.desc':
     'لم يقم معلمك بإضافة أي جلسات مباشرة بعد.',
+
+    'profile.title':
+  'ملفي الشخصي',
+
+'profile.subtitle':
+  'إدارة حسابك وإعدادات الأمان',
+
+'profile.student':
+  'طالب Deutschly',
+
+'profile.hero.desc':
+  'واصل رحلتك في تعلم الألمانية 🇩🇪',
+
+'profile.currentLevel':
+  'المستوى الحالي',
+
+'profile.passwordUpdated':
+  'تم تحديث كلمة المرور',
+
+'profile.passwordUpdatedDesc':
+  'تم تغيير كلمة المرور بنجاح.',
+
+'profile.accountInfo':
+  'معلومات الحساب',
+
+'profile.accountInfoDesc':
+  'تفاصيل ملفك الشخصي ومستوى التعلم الخاص بك',
+
+'profile.email':
+  'البريد الإلكتروني',
+
+'profile.germanLevel':
+  'مستوى الألمانية',
+
+'profile.security':
+  'الأمان',
+
+'profile.securityDesc':
+  'قم بتحديث كلمة المرور الخاصة بك بأمان',
+
+'profile.changePassword':
+  'تغيير كلمة المرور',
+
+'profile.newPassword':
+  'كلمة المرور الجديدة',
+
+'profile.confirmPassword':
+  'تأكيد كلمة المرور',
+
+'profile.enterPassword':
+  'أدخل كلمة المرور الجديدة',
+
+'profile.confirmNewPassword':
+  'أكد كلمة المرور الجديدة',
+
+'profile.updating':
+  'جار التحديث...',
+
+'profile.savePassword':
+  'حفظ كلمة المرور',
+
+'profile.cancel':
+  'إلغاء',
+
+'profile.summary':
+  'ملخص الحساب',
+
+'profile.summaryDesc':
+  'حالة التعلم الحالية الخاصة بك',
+
+'profile.studentName':
+  'اسم الطالب',
+
+'profile.accountStatus':
+  'حالة الحساب',
+
+'profile.active':
+  'نشط',
+
+'profile.keepGoing':
+  'استمر 🚀',
+
+'profile.keepGoingDesc':
+  'الممارسة اليومية والاستمرارية هما أسرع طريقة لإتقان الألمانية.',
+
+'profile.passwordShort':
+  'يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل',
+
+'profile.passwordMismatch':
+  'كلمات المرور غير متطابقة',
+
+'profile.passwordError':
+  'خطأ أثناء تحديث كلمة المرور ❌',
+
+Logout: 'تسجيل الخروج',
+takeTest: 'إجراء اختبار',
 }
 
 export default ar

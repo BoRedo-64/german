@@ -27,6 +27,7 @@ const en = {
     myDashboard: 'My Dashboard',
     statistics: 'Statistics',
     joinSession: 'Join a Session',
+    takeTest: 'Take a test',
     correctAnswers: 'Correct Answers',
     levels: 'Levels A1 - C2',
     adminDashboard: 'Admin Dashboard',
@@ -210,6 +211,100 @@ const en = {
     'No Sessions Yet',
     'meetings.empty.desc':
     "Your teacher hasn't assigned any live sessions yet.",
+    'profile.title':
+  'My Profile',
+
+'profile.subtitle':
+  'Manage your account and security settings',
+
+'profile.student':
+  'Deutschly Student',
+
+'profile.hero.desc':
+  'Continue your German learning journey 🇩🇪',
+
+'profile.currentLevel':
+  'Current Level',
+
+'profile.passwordUpdated':
+  'Password Updated',
+
+'profile.passwordUpdatedDesc':
+  'Your password has been changed successfully.',
+
+'profile.accountInfo':
+  'Account Information',
+
+'profile.accountInfoDesc':
+  'Your profile details and learning level',
+
+'profile.email':
+  'Email Address',
+
+'profile.germanLevel':
+  'German Level',
+
+'profile.security':
+  'Security',
+
+'profile.securityDesc':
+  'Update your account password securely',
+
+'profile.changePassword':
+  'Change Password',
+
+'profile.newPassword':
+  'New Password',
+
+'profile.confirmPassword':
+  'Confirm Password',
+
+'profile.enterPassword':
+  'Enter new password',
+
+'profile.confirmNewPassword':
+  'Confirm new password',
+
+'profile.updating':
+  'Updating...',
+
+'profile.savePassword':
+  'Save Password',
+
+'profile.cancel':
+  'Cancel',
+
+'profile.summary':
+  'Profile Summary',
+
+'profile.summaryDesc':
+  'Your current learning status',
+
+'profile.studentName':
+  'Student Name',
+
+'profile.accountStatus':
+  'Account Status',
+
+'profile.active':
+  'Active',
+
+'profile.keepGoing':
+  'Keep Going 🚀',
+
+'profile.keepGoingDesc':
+  'Daily practice and consistency are the fastest ways to master German.',
+
+'profile.passwordShort':
+  'Password must be at least 6 characters',
+
+'profile.passwordMismatch':
+  'Passwords do not match',
+
+'profile.passwordError':
+  'Error updating password ❌',
+
+'Logout': 'Logout'
 }
 
 export default en
