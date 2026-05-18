@@ -1,42 +1,80 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
-type Language = 'en' | 'fr' | 'ar'
+export type Language =
+  | 'en'
+  | 'fr'
+  | 'ar'
 
 interface LanguageContextType {
   language: Language
-  setLanguage: (lang: Language) => void
+
+  setLanguage: (
+    lang: Language
+  ) => void
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+const LanguageContext =
+  createContext<
+    LanguageContextType
+  >({
+    language: 'en',
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en')
+    setLanguage: () => {},
+  })
 
-  // 🔥 load from localStorage
+export function LanguageProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [language, setLanguageState] =
+    useState<Language>('en')
+
+  // 🔥 LOAD SAVED LANGUAGE
   useEffect(() => {
-    const stored = localStorage.getItem('lang') as Language
-    if (stored) setLanguage(stored)
+    const saved =
+      localStorage.getItem(
+        'language'
+      ) as Language | null
+
+    if (saved) {
+      setLanguageState(saved)
+    }
   }, [])
 
-  // 🔥 save to localStorage
-  useEffect(() => {
-    localStorage.setItem('lang', language)
-  }, [language])
+  // 🔥 CHANGE LANGUAGE
+  const setLanguage = (
+    lang: Language
+  ) => {
+    setLanguageState(lang)
+
+    localStorage.setItem(
+      'language',
+      lang
+    )
+  }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider
+      value={{
+        language,
+        setLanguage,
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   )
 }
 
-// 🔥 hook
 export function useLanguage() {
-  const context = useContext(LanguageContext)
-  if (!context) {
-    throw new Error('useLanguage must be used inside LanguageProvider')
-  }
-  return context
+  return useContext(
+    LanguageContext
+  )
 }

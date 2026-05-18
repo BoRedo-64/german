@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
 import { AdminSidebar } from '@/components/AdminSidebar'
-import { useLanguage } from '@/context/LanguageContext'
 
 import {
   Trash2,
@@ -37,8 +36,6 @@ type Question = {
 }
 
 export default function DeletePlacementQuestionsPage() {
-  const { language } =
-    useLanguage()
 
   const [
     sidebarOpen,
@@ -203,7 +200,6 @@ export default function DeletePlacementQuestionsPage() {
 
       {/* SIDEBAR */}
       <AdminSidebar
-        language={language}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
       />

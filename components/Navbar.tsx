@@ -2,9 +2,15 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { t } from '@/lib/i18n'
+
+import { t } from '@/lib/translations'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabaseClient'
+
+import {
+  useLanguage,
+  type Language,
+} from '@/context/LanguageContext'
 
 import {
   DropdownMenu,
@@ -13,17 +19,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-type Language = 'en' | 'fr' | 'ar'
+export function Navbar() {
+  const {
+    language,
+    setLanguage,
+  } = useLanguage()
 
-interface NavbarProps {
-  language?: Language
-  onLanguageChange?: (lang: Language) => void
-}
-
-export function Navbar({
-  language = 'en',
-  onLanguageChange,
-}: NavbarProps) {
   const [isOpen, setIsOpen] =
     useState(false)
 
@@ -101,7 +102,10 @@ export function Navbar({
   }, [])
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-base border-b border-border">
+    <nav
+  dir={language === 'ar' ? 'rtl' : 'ltr'}
+  className="sticky top-0 z-50 bg-white shadow-base border-b border-border"
+>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -166,7 +170,7 @@ export function Navbar({
                         lang.code
                       }
                       onClick={() =>
-                        onLanguageChange?.(
+                        setLanguage(
                           lang.code
                         )
                       }
@@ -264,7 +268,7 @@ export function Navbar({
                       lang.code
                     }
                     onClick={() => {
-                      onLanguageChange?.(
+                      setLanguage(
                         lang.code
                       )
 

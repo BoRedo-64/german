@@ -22,9 +22,6 @@ import {
 } from 'lucide-react'
 
 export default function AdminPlacementPage() {
-  const { language } =
-    useLanguage()
-
   const [
     sidebarOpen,
     setSidebarOpen,
@@ -233,7 +230,6 @@ export default function AdminPlacementPage() {
 
       {/* SIDEBAR */}
       <AdminSidebar
-        language={language}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
       />

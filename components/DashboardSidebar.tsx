@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
-import { t } from '@/lib/i18n'
+import { t } from '@/lib/translations'
 
 import {
   FileText,

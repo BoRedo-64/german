@@ -35,8 +35,6 @@ const LEVELS = [
 ]
 
 export default function AddMeetingPage() {
-  const [language, setLanguage] =
-    useState<Language>('en')
 
   const [sidebarOpen, setSidebarOpen] =
     useState(false)
@@ -224,7 +222,6 @@ export default function AddMeetingPage() {
 
       {/* SIDEBAR */}
       <AdminSidebar
-        language={language}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
       />
@@ -271,33 +268,6 @@ export default function AddMeetingPage() {
 
               </div>
             </div>
-
-            {/* RIGHT */}
-            <select
-              value={language}
-              onChange={(e) =>
-                setLanguage(
-                  e.target.value as Language
-                )
-              }
-              className="
-                px-4 py-3 rounded-2xl
-                border bg-white shadow-sm
-              "
-            >
-              <option value="en">
-                English
-              </option>
-
-              <option value="fr">
-                Français
-              </option>
-
-              <option value="ar">
-                العربية
-              </option>
-            </select>
-
           </div>
         </div>
 

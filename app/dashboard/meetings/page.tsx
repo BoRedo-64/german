@@ -16,9 +16,12 @@ import {
   BookOpen,
 } from 'lucide-react'
 
-import { useLanguage } from '@/context/LanguageContext'
+import {
+  useLanguage,
+  type Language,
+} from '@/context/LanguageContext'
 
-type Language = 'en' | 'fr' | 'ar'
+import { t } from '@/lib/translations'
 
 interface Meeting {
   id: string
@@ -28,8 +31,13 @@ interface Meeting {
 }
 
 export default function MeetingsPage() {
-  const { language, setLanguage } =
-    useLanguage()
+  const {
+    language,
+    setLanguage,
+  } = useLanguage()
+
+  const isRTL =
+    language === 'ar'
 
   const [meetings, setMeetings] =
     useState<Meeting[]>([])
@@ -82,7 +90,14 @@ export default function MeetingsPage() {
   }, [])
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div
+      dir={
+        isRTL
+          ? 'rtl'
+          : 'ltr'
+      }
+      className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+    >
 
       <DashboardSidebar
         language={language}
@@ -120,11 +135,21 @@ export default function MeetingsPage() {
                 <div>
 
                   <h1 className="text-4xl font-black tracking-tight">
-                    Live Sessions
+
+                    {t(
+                      'meetings.title',
+                      language
+                    )}
+
                   </h1>
 
                   <p className="text-muted-foreground mt-1">
-                    Join your scheduled German learning meetings
+
+                    {t(
+                      'meetings.subtitle',
+                      language
+                    )}
+
                   </p>
 
                 </div>
@@ -156,6 +181,7 @@ export default function MeetingsPage() {
               <option value="ar">
                 العربية
               </option>
+
             </select>
 
           </div>
@@ -182,18 +208,32 @@ export default function MeetingsPage() {
                 <Sparkles className="w-4 h-4" />
 
                 <span className="text-sm font-semibold">
-                  Deutschly Sessions
+
+                  {t(
+                    'meetings.hero.badge',
+                    language
+                  )}
+
                 </span>
 
               </div>
 
               <h2 className="text-5xl font-black leading-tight">
-                Learn Together Live
+
+                {t(
+                  'meetings.hero.title',
+                  language
+                )}
+
               </h2>
 
               <p className="text-white/80 text-lg mt-4 leading-relaxed">
-                Attend interactive sessions with your teacher
-                and improve your speaking and listening skills.
+
+                {t(
+                  'meetings.hero.desc',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -209,7 +249,12 @@ export default function MeetingsPage() {
               <div className="w-16 h-16 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse" />
 
               <p className="mt-6 text-muted-foreground font-medium">
-                Loading sessions...
+
+                {t(
+                  'meetings.loading',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -223,24 +268,42 @@ export default function MeetingsPage() {
                   icon={
                     <Clock3 className="w-6 h-6 text-blue-600" />
                   }
-                  title="Be On Time"
-                  text="Join a few minutes early for a smoother session."
+                  title={t(
+                    'meetings.tip1.title',
+                    language
+                  )}
+                  text={t(
+                    'meetings.tip1.desc',
+                    language
+                  )}
                 />
 
                 <TipCard
                   icon={
                     <BookOpen className="w-6 h-6 text-purple-600" />
                   }
-                  title="Participate"
-                  text="Speaking during sessions improves fluency much faster."
+                  title={t(
+                    'meetings.tip2.title',
+                    language
+                  )}
+                  text={t(
+                    'meetings.tip2.desc',
+                    language
+                  )}
                 />
 
                 <TipCard
                   icon={
                     <Video className="w-6 h-6 text-green-600" />
                   }
-                  title="Use Headphones"
-                  text="Better audio quality helps concentration and listening."
+                  title={t(
+                    'meetings.tip3.title',
+                    language
+                  )}
+                  text={t(
+                    'meetings.tip3.desc',
+                    language
+                  )}
                 />
 
               </div>
@@ -284,7 +347,10 @@ export default function MeetingsPage() {
 
                               <Calendar className="w-4 h-4" />
 
-                              Live Session
+                              {t(
+                                'meetings.live',
+                                language
+                              )}
 
                             </div>
 
@@ -310,7 +376,12 @@ export default function MeetingsPage() {
                               <div>
 
                                 <p className="text-sm text-muted-foreground">
-                                  Scheduled Time
+
+                                  {t(
+                                    'meetings.time',
+                                    language
+                                  )}
+
                                 </p>
 
                                 <p className="font-bold">
@@ -345,7 +416,10 @@ export default function MeetingsPage() {
 
                               <ExternalLink className="w-5 h-5" />
 
-                              Join Session
+                              {t(
+                                'meetings.join',
+                                language
+                              )}
 
                             </div>
 
@@ -367,11 +441,21 @@ export default function MeetingsPage() {
                   </div>
 
                   <h3 className="text-3xl font-black mt-8">
-                    No Sessions Yet
+
+                    {t(
+                      'meetings.empty.title',
+                      language
+                    )}
+
                   </h3>
 
                   <p className="text-muted-foreground mt-3 text-lg max-w-md mx-auto">
-                    Your teacher hasn't assigned any live sessions yet.
+
+                    {t(
+                      'meetings.empty.desc',
+                      language
+                    )}
+
                   </p>
 
                 </div>

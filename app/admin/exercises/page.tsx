@@ -13,9 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-import { t } from '@/lib/i18n'
 import { supabase } from '@/lib/supabaseClient'
-import { useLanguage } from '@/context/LanguageContext'
 
 import {
   FileText,
@@ -25,11 +23,7 @@ import {
   Menu,
 } from 'lucide-react'
 
-type Language = 'en' | 'fr' | 'ar'
-
 export default function AddExercisePage() {
-  const { language, setLanguage } =
-    useLanguage()
 
   const [sidebarOpen, setSidebarOpen] =
     useState(false)
@@ -145,7 +139,6 @@ export default function AddExercisePage() {
     <div className="flex h-screen bg-gradient-to-br from-slate-50 to-blue-50">
 
       <AdminSidebar
-        language={language}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
       />
@@ -182,28 +175,6 @@ export default function AddExercisePage() {
               </div>
 
             </div>
-
-            <select
-              value={language}
-              onChange={(e) =>
-                setLanguage(
-                  e.target.value as Language
-                )
-              }
-              className="px-4 py-2 rounded-2xl border border-border bg-white shadow-sm"
-            >
-              <option value="en">
-                English
-              </option>
-
-              <option value="fr">
-                Français
-              </option>
-
-              <option value="ar">
-                العربية
-              </option>
-            </select>
 
           </div>
         </div>

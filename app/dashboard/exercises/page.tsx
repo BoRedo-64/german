@@ -15,13 +15,21 @@ import {
   Volume2,
 } from 'lucide-react'
 
-import { useLanguage } from '@/context/LanguageContext'
+import {
+  useLanguage,
+  type Language,
+} from '@/context/LanguageContext'
 
-type Language = 'en' | 'fr' | 'ar'
+import { t } from '@/lib/translations'
 
 export default function ExercisesPage() {
-  const { language, setLanguage } =
-    useLanguage()
+  const {
+    language,
+    setLanguage,
+  } = useLanguage()
+
+  const isRTL =
+    language === 'ar'
 
   const [loading, setLoading] =
     useState(true)
@@ -86,14 +94,26 @@ export default function ExercisesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+      <div
+        dir={
+          isRTL
+            ? 'rtl'
+            : 'ltr'
+        }
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50"
+      >
 
         <div className="text-center space-y-4">
 
           <div className="w-16 h-16 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 mx-auto animate-pulse" />
 
           <p className="text-muted-foreground font-medium">
-            Loading exercises...
+
+            {t(
+              'exercise.loading',
+              language
+            )}
+
           </p>
 
         </div>
@@ -102,7 +122,14 @@ export default function ExercisesPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div
+      dir={
+        isRTL
+          ? 'rtl'
+          : 'ltr'
+      }
+      className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+    >
 
       <DashboardSidebar
         language={language}
@@ -140,13 +167,25 @@ export default function ExercisesPage() {
                 <div className="flex items-center gap-3">
 
                   <div>
+
                     <h1 className="text-4xl font-black tracking-tight">
-                      Exercises
+
+                      {t(
+                        'exercise.title',
+                        language
+                      )}
+
                     </h1>
 
                     <p className="text-muted-foreground mt-1">
-                      Personalized for your level
+
+                      {t(
+                        'exercise.subtitle',
+                        language
+                      )}
+
                     </p>
+
                   </div>
 
                 </div>
@@ -190,6 +229,7 @@ export default function ExercisesPage() {
                 <option value="ar">
                   العربية
                 </option>
+
               </select>
 
             </div>
@@ -217,18 +257,32 @@ export default function ExercisesPage() {
                 <Sparkles className="w-4 h-4" />
 
                 <span className="text-sm font-semibold">
-                  Deutschly Learning
+
+                  {t(
+                    'exercise.hero.badge',
+                    language
+                  )}
+
                 </span>
 
               </div>
 
               <h2 className="text-5xl font-black leading-tight">
-                Continue Your German Journey
+
+                {t(
+                  'exercise.hero.title',
+                  language
+                )}
+
               </h2>
 
               <p className="text-white/80 text-lg mt-4 leading-relaxed">
-                Practice with quizzes, PDFs and audio lessons
-                adapted specifically for your current level.
+
+                {t(
+                  'exercise.hero.desc',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -241,8 +295,14 @@ export default function ExercisesPage() {
           {/* QUIZZES */}
           {quizzes.length > 0 && (
             <Section
-              title="Quizzes"
-              subtitle="Test your grammar and vocabulary"
+              title={t(
+                'exercise.quizzes',
+                language
+              )}
+              subtitle={t(
+                'exercise.quizzes.desc',
+                language
+              )}
             >
 
               {quizzes.map((q) => (
@@ -256,7 +316,11 @@ export default function ExercisesPage() {
                     }
                     title={q.title}
                     gradient="from-blue-600 to-cyan-500"
-                    badge="Interactive Quiz"
+                    badge={t(
+                      'exercise.badge.quiz',
+                      language
+                    )}
+                    language={language}
                   />
                 </Link>
               ))}
@@ -267,8 +331,14 @@ export default function ExercisesPage() {
           {/* PDFs */}
           {pdfs.length > 0 && (
             <Section
-              title="PDF Resources"
-              subtitle="Reading materials and grammar sheets"
+              title={t(
+                'exercise.pdfs',
+                language
+              )}
+              subtitle={t(
+                'exercise.pdfs.desc',
+                language
+              )}
             >
 
               {pdfs.map((p) => (
@@ -287,7 +357,11 @@ export default function ExercisesPage() {
                     }
                     title={p.title}
                     gradient="from-purple-600 to-pink-500"
-                    badge="PDF Resource"
+                    badge={t(
+                      'exercise.badge.pdf',
+                      language
+                    )}
+                    language={language}
                   />
                 </div>
               ))}
@@ -298,8 +372,14 @@ export default function ExercisesPage() {
           {/* AUDIO */}
           {audio.length > 0 && (
             <Section
-              title="Audio Lessons"
-              subtitle="Improve your listening skills"
+              title={t(
+                'exercise.audio',
+                language
+              )}
+              subtitle={t(
+                'exercise.audio.desc',
+                language
+              )}
             >
 
               {audio.map((a) => (
@@ -313,7 +393,11 @@ export default function ExercisesPage() {
                     }
                     title={a.title}
                     gradient="from-orange-500 to-red-500"
-                    badge="Audio Lesson"
+                    badge={t(
+                      'exercise.badge.audio',
+                      language
+                    )}
+                    language={language}
                   />
                 </Link>
               ))}
@@ -332,11 +416,21 @@ export default function ExercisesPage() {
               </div>
 
               <h3 className="text-3xl font-black mt-8">
-                No Exercises Yet
+
+                {t(
+                  'exercise.empty.title',
+                  language
+                )}
+
               </h3>
 
               <p className="text-muted-foreground mt-3 text-lg">
-                Your level currently has no available exercises.
+
+                {t(
+                  'exercise.empty.desc',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -359,6 +453,7 @@ function Section({
       <div className="flex items-end justify-between">
 
         <div>
+
           <h2 className="text-3xl font-black">
             {title}
           </h2>
@@ -366,6 +461,7 @@ function Section({
           <p className="text-muted-foreground mt-2">
             {subtitle}
           </p>
+
         </div>
 
       </div>
@@ -383,9 +479,15 @@ function ExerciseCard({
   title,
   gradient,
   badge,
+  language,
 }: any) {
   return (
     <div
+      dir={
+        language === 'ar'
+          ? 'rtl'
+          : 'ltr'
+      }
       className="
         group relative overflow-hidden
         rounded-[30px]
@@ -440,7 +542,12 @@ function ExerciseCard({
         <div className="mt-6 flex items-center justify-between">
 
           <div className="text-sm text-muted-foreground">
-            Start learning
+
+            {t(
+              'exercise.start',
+              language
+            )}
+
           </div>
 
           <div className="w-10 h-10 rounded-2xl bg-secondary group-hover:bg-blue-600 transition-all flex items-center justify-center">

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
 import { AdminSidebar } from '@/components/AdminSidebar'
-import { useLanguage } from '@/context/LanguageContext'
 
 import {
   Trash2,
@@ -31,8 +30,6 @@ type Exercise = {
 }
 
 export default function DeleteExercisePage() {
-  const { language } =
-    useLanguage()
 
   const [
     sidebarOpen,
@@ -211,7 +208,6 @@ export default function DeleteExercisePage() {
 
       {/* SIDEBAR */}
       <AdminSidebar
-        language={language}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
       />

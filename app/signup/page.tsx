@@ -9,6 +9,12 @@ import { Input } from '@/components/ui/input'
 
 import { supabase } from '@/lib/supabaseClient'
 
+import { t } from '@/lib/translations'
+
+import {
+  useLanguage,
+} from '@/context/LanguageContext'
+
 import {
   Sparkles,
   Mail,
@@ -19,6 +25,12 @@ import {
 
 export default function SignupPage() {
   const router = useRouter()
+
+  const { language } =
+    useLanguage()
+
+  const isRTL =
+    language === 'ar'
 
   const [email, setEmail] =
     useState('')
@@ -52,7 +64,10 @@ export default function SignupPage() {
       confirmPassword
     ) {
       setError(
-        'Passwords do not match'
+        t(
+          'signup.error.match',
+          language
+        )
       )
 
       return
@@ -62,7 +77,10 @@ export default function SignupPage() {
       password.length < 6
     ) {
       setError(
-        'Password must be at least 6 characters'
+        t(
+          'signup.error.length',
+          language
+        )
       )
 
       return
@@ -98,7 +116,6 @@ export default function SignupPage() {
           {
             id: data.user.id,
             is_admin: false,
-            // is_active automatically false by default
           },
         ])
 
@@ -125,7 +142,14 @@ export default function SignupPage() {
   // 🔥 SUCCESS
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center px-4">
+      <div
+        dir={
+          isRTL
+            ? 'rtl'
+            : 'ltr'
+        }
+        className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center px-4"
+      >
 
         <div className="w-full max-w-lg">
 
@@ -146,12 +170,21 @@ export default function SignupPage() {
                 </div>
 
                 <h1 className="text-5xl font-black">
-                  Account Created
+
+                  {t(
+                    'signup.success.title',
+                    language
+                  )}
+
                 </h1>
 
                 <p className="text-white/80 text-lg mt-5 leading-relaxed max-w-md mx-auto">
-                  Your account is awaiting admin approval.
-                  You will be able to log in once activated.
+
+                  {t(
+                    'signup.success.desc',
+                    language
+                  )}
+
                 </p>
 
               </div>
@@ -165,7 +198,10 @@ export default function SignupPage() {
 
                 <Sparkles className="w-5 h-5" />
 
-                Waiting for activation
+                {t(
+                  'signup.success.waiting',
+                  language
+                )}
 
               </div>
 
@@ -179,7 +215,14 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center px-4 py-10 overflow-hidden">
+    <div
+      dir={
+        isRTL
+          ? 'rtl'
+          : 'ltr'
+      }
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center px-4 py-10 overflow-hidden"
+    >
 
       <div className="w-full max-w-lg">
 
@@ -215,11 +258,21 @@ export default function SignupPage() {
             <div className="relative z-10 text-center">
 
               <h1 className="text-5xl font-black leading-tight">
-                Create Account
+
+                {t(
+                  'signup.create',
+                  language
+                )}
+
               </h1>
 
               <p className="text-white/80 text-lg mt-5 leading-relaxed">
-                Join Deutschly and start your German learning journey.
+
+                {t(
+                  'signup.subtitle',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -238,7 +291,12 @@ export default function SignupPage() {
               <div className="space-y-3">
 
                 <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                  Email Address
+
+                  {t(
+                    'signup.email',
+                    language
+                  )}
+
                 </label>
 
                 <div className="relative">
@@ -266,7 +324,12 @@ export default function SignupPage() {
               <div className="space-y-3">
 
                 <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                  Password
+
+                  {t(
+                    'signup.password',
+                    language
+                  )}
+
                 </label>
 
                 <div className="relative">
@@ -294,7 +357,12 @@ export default function SignupPage() {
               <div className="space-y-3">
 
                 <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                  Confirm Password
+
+                  {t(
+                    'signup.confirm',
+                    language
+                  )}
+
                 </label>
 
                 <div className="relative">
@@ -345,8 +413,14 @@ export default function SignupPage() {
                 <div className="flex items-center gap-3">
 
                   {loading
-                    ? 'Creating Account...'
-                    : 'Create Account'}
+                    ? t(
+                        'signup.creating',
+                        language
+                      )
+                    : t(
+                        'signup.submit',
+                        language
+                      )}
 
                   {!loading && (
                     <ArrowRight className="w-5 h-5" />
@@ -363,14 +437,20 @@ export default function SignupPage() {
 
               <p className="text-muted-foreground">
 
-                Already have an account?{' '}
+                {t(
+                  'signup.already',
+                  language
+                )}{' '}
 
                 <Link
                   href="/login"
                   className="font-bold text-primary hover:underline"
                 >
 
-                  Sign In
+                  {t(
+                    'signup.signin',
+                    language
+                  )}
 
                 </Link>
 

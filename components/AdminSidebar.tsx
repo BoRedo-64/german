@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { t } from '@/lib/i18n'
 
 import {
   PlusCircle,
@@ -13,20 +12,15 @@ import {
   LogOut,
   Paperclip,
   ShieldCheck,
-  Brain,
   Trash,
 } from 'lucide-react'
 
-type Language = 'en' | 'fr' | 'ar'
-
 interface AdminSidebarProps {
-  language?: Language
   open: boolean
   setOpen: (value: boolean) => void
 }
 
 export function AdminSidebar({
-  language = 'en',
   open,
   setOpen,
 }: AdminSidebarProps) {
@@ -37,49 +31,48 @@ export function AdminSidebar({
     useState<string>('Loading...')
 
   const adminItems = [
-  {
-    key: 'Add File',
-    href: '/admin/exercises',
-    icon: Paperclip,
-  },
+    {
+      key: 'Add File',
+      href: '/admin/exercises',
+      icon: Paperclip,
+    },
 
-  {
-    key: 'Add Quiz',
-    href: '/admin/quiz',
-    icon: PlusCircle,
-  },
+    {
+      key: 'Add Quiz',
+      href: '/admin/quiz',
+      icon: PlusCircle,
+    },
 
-  // ✅ NEW
-  {
-    key: 'Add Test Question',
-    href: '/admin/placement',
-    icon: PlusCircle,
-  },
+    {
+      key: 'Add Test Question',
+      href: '/admin/placement',
+      icon: PlusCircle,
+    },
 
-  {
-    key: 'Delete Exercice',
-    href: '/admin/delete-exercice',
-    icon: Trash,
-  },
+    {
+      key: 'Delete Exercise',
+      href: '/admin/delete-exercice',
+      icon: Trash,
+    },
 
-  {
-    key: 'Delete Test Question',
-    href: '/admin/delete-test',
-    icon: Trash,
-  },
+    {
+      key: 'Delete Test Question',
+      href: '/admin/delete-test',
+      icon: Trash,
+    },
 
-  {
-    key: 'Add Meeting',
-    href: '/admin/meetings',
-    icon: Calendar,
-  },
+    {
+      key: 'Add Meeting',
+      href: '/admin/meetings',
+      icon: Calendar,
+    },
 
-  {
-    key: 'Profile',
-    href: '/admin/profile',
-    icon: ShieldCheck,
-  },
-]
+    {
+      key: 'Profile',
+      href: '/admin/profile',
+      icon: ShieldCheck,
+    },
+  ]
 
   const isActive = (href: string) =>
     pathname === href
@@ -206,10 +199,7 @@ export function AdminSidebar({
                 </div>
 
                 <span className="font-medium text-sm">
-                  {t(
-                    item.key as any,
-                    language
-                  )}
+                  {item.key}
                 </span>
               </Link>
             )
@@ -260,10 +250,7 @@ export function AdminSidebar({
             </div>
 
             <span>
-              {t(
-                'Logout',
-                language
-              ) || 'Logout'}
+              Logout
             </span>
           </button>
         </div>

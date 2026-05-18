@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import { supabase } from '@/lib/supabaseClient'
+import { t } from '@/lib/translations'
+import { useLanguage } from '@/context/LanguageContext'
 
 import {
   Mail,
@@ -22,6 +24,9 @@ import {
 
 export default function LoginPage() {
   const router = useRouter()
+
+  const { language } =
+    useLanguage()
 
   const [email, setEmail] =
     useState('')
@@ -151,7 +156,10 @@ export default function LoginPage() {
       await supabase.auth.signOut()
 
       setError(
-        'Please wait for admin activation'
+        t(
+          'login.wait',
+          language
+        )
       )
 
       setLoading(false)
@@ -185,7 +193,10 @@ export default function LoginPage() {
             <div className="w-14 h-14 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
 
             <p className="text-lg font-semibold text-muted-foreground">
-              Loading...
+              {t(
+                'login.loading',
+                language
+              )}
             </p>
 
           </div>
@@ -233,11 +244,17 @@ export default function LoginPage() {
             <div className="relative z-10 text-center">
 
               <h1 className="text-5xl font-black leading-tight">
-                Welcome Back
+                {t(
+                  'login.welcome',
+                  language
+                )}
               </h1>
 
               <p className="text-white/80 text-lg mt-5 leading-relaxed">
-                Sign in and continue your German learning journey.
+                {t(
+                  'login.subtitle',
+                  language
+                )}
               </p>
 
             </div>
@@ -258,7 +275,10 @@ export default function LoginPage() {
               <div className="space-y-3">
 
                 <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                  Email Address
+                  {t(
+                    'login.email',
+                    language
+                  )}
                 </label>
 
                 <div className="relative">
@@ -289,7 +309,10 @@ export default function LoginPage() {
               <div className="space-y-3">
 
                 <label className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                  Password
+                  {t(
+                    'login.password',
+                    language
+                  )}
                 </label>
 
                 <div className="relative">
@@ -345,8 +368,14 @@ export default function LoginPage() {
                 <div className="flex items-center gap-3">
 
                   {loading
-                    ? 'Signing In...'
-                    : 'Sign In'}
+                    ? t(
+                        'login.signing',
+                        language
+                      )
+                    : t(
+                        'login.signin',
+                        language
+                      )}
 
                   {!loading && (
                     <ArrowRight className="w-5 h-5" />
@@ -363,14 +392,20 @@ export default function LoginPage() {
 
               <p className="text-muted-foreground">
 
-                Don&apos;t have an account?{' '}
+                {t(
+                  'login.noaccount',
+                  language
+                )}{' '}
 
                 <Link
                   href="/signup"
                   className="font-bold text-primary hover:underline"
                 >
 
-                  Create Account
+                  {t(
+                    'login.create',
+                    language
+                  )}
 
                 </Link>
 

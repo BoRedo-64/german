@@ -19,7 +19,6 @@ import {
 
 import {
   Menu,
-  TrendingUp,
   Flame,
   CheckCircle2,
   BookOpen,
@@ -28,13 +27,21 @@ import {
   Activity,
 } from 'lucide-react'
 
-import { useLanguage } from '@/context/LanguageContext'
+import {
+  useLanguage,
+  type Language,
+} from '@/context/LanguageContext'
 
-type Language = 'en' | 'fr' | 'ar'
+import { t } from '@/lib/translations'
 
 export default function StatisticsPage() {
-  const { language, setLanguage } =
-    useLanguage()
+  const {
+    language,
+    setLanguage,
+  } = useLanguage()
+
+  const isRTL =
+    language === 'ar'
 
   const [loading, setLoading] =
     useState(true)
@@ -144,7 +151,7 @@ export default function StatisticsPage() {
           day: new Date(
             day.date
           ).toLocaleDateString(
-            'en',
+            language,
             {
               weekday: 'short',
             }
@@ -164,18 +171,30 @@ export default function StatisticsPage() {
     }
 
     fetchStats()
-  }, [])
+  }, [language])
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+      <div
+        dir={
+          isRTL
+            ? 'rtl'
+            : 'ltr'
+        }
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50"
+      >
 
         <div className="text-center space-y-4">
 
           <div className="w-16 h-16 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse mx-auto" />
 
           <p className="text-muted-foreground font-medium">
-            Loading statistics...
+
+            {t(
+              'stats.loading',
+              language
+            )}
+
           </p>
 
         </div>
@@ -201,7 +220,14 @@ export default function StatisticsPage() {
       : 0
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div
+      dir={
+        isRTL
+          ? 'rtl'
+          : 'ltr'
+      }
+      className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+    >
 
       <DashboardSidebar
         language={language}
@@ -234,21 +260,28 @@ export default function StatisticsPage() {
                 <Menu className="w-6 h-6" />
               </button>
 
-              <div className="flex items-center gap-4">
+              <div>
 
-                <div>
+                <h1 className="text-4xl font-black tracking-tight">
 
-                  <h1 className="text-4xl font-black tracking-tight">
-                    Statistics
-                  </h1>
+                  {t(
+                    'stats.title',
+                    language
+                  )}
 
-                  <p className="text-muted-foreground mt-1">
-                    Track your German learning progress
-                  </p>
+                </h1>
 
-                </div>
+                <p className="text-muted-foreground mt-1">
+
+                  {t(
+                    'stats.subtitle',
+                    language
+                  )}
+
+                </p>
 
               </div>
+
             </div>
 
             {/* RIGHT */}
@@ -301,18 +334,32 @@ export default function StatisticsPage() {
                 <Sparkles className="w-4 h-4" />
 
                 <span className="text-sm font-semibold">
-                  Deutschly Analytics
+
+                  {t(
+                    'stats.hero.badge',
+                    language
+                  )}
+
                 </span>
 
               </div>
 
               <h2 className="text-5xl font-black leading-tight">
-                Your Learning Journey
+
+                {t(
+                  'stats.hero.title',
+                  language
+                )}
+
               </h2>
 
               <p className="text-white/80 text-lg mt-4 leading-relaxed">
-                Analyze your performance, streaks and weekly progress
-                to improve faster every day.
+
+                {t(
+                  'stats.hero.desc',
+                  language
+                )}
+
               </p>
 
             </div>
@@ -329,7 +376,10 @@ export default function StatisticsPage() {
               icon={
                 <CheckCircle2 className="w-7 h-7 text-green-600" />
               }
-              title="Correct Answers"
+              title={t(
+                'stats.correct',
+                language
+              )}
               value={totalCorrect}
               gradient="from-green-50 to-green-100"
             />
@@ -338,7 +388,10 @@ export default function StatisticsPage() {
               icon={
                 <BookOpen className="w-7 h-7 text-purple-600" />
               }
-              title="Total Attempts"
+              title={t(
+                'stats.attempts',
+                language
+              )}
               value={total}
               gradient="from-purple-50 to-purple-100"
             />
@@ -347,8 +400,14 @@ export default function StatisticsPage() {
               icon={
                 <Flame className="w-7 h-7 text-orange-600" />
               }
-              title="Current Streak"
-              value={`${streak} days`}
+              title={t(
+                'stats.streak',
+                language
+              )}
+              value={`${streak} ${t(
+                'stats.days',
+                language
+              )}`}
               gradient="from-orange-50 to-orange-100"
             />
 
@@ -356,7 +415,10 @@ export default function StatisticsPage() {
               icon={
                 <Target className="w-7 h-7 text-blue-600" />
               }
-              title="Accuracy"
+              title={t(
+                'stats.accuracy',
+                language
+              )}
               value={`${progressPercent}%`}
               gradient="from-blue-50 to-blue-100"
             />
@@ -377,11 +439,21 @@ export default function StatisticsPage() {
                   <div>
 
                     <h3 className="text-3xl font-black">
-                      Weekly Progress
+
+                      {t(
+                        'stats.weekly.title',
+                        language
+                      )}
+
                     </h3>
 
                     <p className="text-muted-foreground mt-2">
-                      Lessons completed over the last 7 days
+
+                      {t(
+                        'stats.weekly.desc',
+                        language
+                      )}
+
                     </p>
 
                   </div>
@@ -474,7 +546,12 @@ export default function StatisticsPage() {
                   <div>
 
                     <p className="text-sm text-muted-foreground">
-                      Accuracy
+
+                      {t(
+                        'stats.accuracy',
+                        language
+                      )}
+
                     </p>
 
                     <h3 className="text-3xl font-black mt-1">
@@ -503,7 +580,12 @@ export default function StatisticsPage() {
                 </div>
 
                 <p className="text-sm text-muted-foreground mt-4">
-                  Keep practicing daily to improve your score.
+
+                  {t(
+                    'stats.progress.keep',
+                    language
+                  )}
+
                 </p>
 
               </div>
@@ -522,7 +604,12 @@ export default function StatisticsPage() {
                   </div>
 
                   <p className="text-white/70">
-                    Current Streak
+
+                    {t(
+                      'stats.streak.title',
+                      language
+                    )}
+
                   </p>
 
                   <h3 className="text-5xl font-black mt-2">
@@ -530,7 +617,12 @@ export default function StatisticsPage() {
                   </h3>
 
                   <p className="mt-2 text-white/80">
-                    days in a row 🔥
+
+                    {t(
+                      'stats.streak.desc',
+                      language
+                    )}
+
                   </p>
 
                 </div>
@@ -541,21 +633,35 @@ export default function StatisticsPage() {
               <div className="bg-white rounded-[32px] border shadow-xl p-7">
 
                 <h3 className="text-2xl font-black mb-5">
-                  Motivation
+
+                  {t(
+                    'stats.motivation',
+                    language
+                  )}
+
                 </h3>
 
                 <div className="space-y-4">
 
                   <MotivationCard
-                    text="Consistency beats intensity. Study a little every day."
+                    text={t(
+                      'stats.m1',
+                      language
+                    )}
                   />
 
                   <MotivationCard
-                    text="Listening daily improves pronunciation naturally."
+                    text={t(
+                      'stats.m2',
+                      language
+                    )}
                   />
 
                   <MotivationCard
-                    text="Mistakes are part of the learning process."
+                    text={t(
+                      'stats.m3',
+                      language
+                    )}
                   />
 
                 </div>
