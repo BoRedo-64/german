@@ -46,7 +46,7 @@ export default function PlacementResultPage() {
     if (saved >= 20)
       detected = 'B1'
 
-    if (saved >= 30)
+    if (saved >= 35)
       detected = 'B2'
 
     setLevel(detected)
