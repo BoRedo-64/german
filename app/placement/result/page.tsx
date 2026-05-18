@@ -87,7 +87,7 @@ export default function PlacementResultPage() {
   }
 
   const percentage = Math.round(
-    (score / 30) * 100
+    (score / 40) * 100
   )
 
   // 🔥 LEVEL COLORS
@@ -172,7 +172,7 @@ export default function PlacementResultPage() {
             <p className="text-white/80 text-2xl mt-8">
               You scored{' '}
               <span className="font-black text-white">
-                {score} / 30
+                {score} / 40
               </span>
             </p>
 
@@ -307,7 +307,7 @@ export default function PlacementResultPage() {
 
                 <SummaryCard
                   label="Correct Answers"
-                  value={`${score} / 30`}
+                  value={`${score} / 40`}
                 />
 
                 <SummaryCard

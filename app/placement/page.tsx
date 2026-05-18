@@ -58,7 +58,7 @@ export default function PlacementStartPage() {
             <p className="text-white/80 text-xl mt-6 leading-relaxed max-w-3xl mx-auto">
               This test will evaluate your German grammar,
               vocabulary, listening and comprehension skills to
-              determine your level from A1 to C2.
+              determine your level from A1 to B2.
             </p>
 
             {/* FEATURES */}
@@ -74,7 +74,7 @@ export default function PlacementStartPage() {
                 </div>
 
                 <h3 className="text-3xl font-black">
-                  30
+                  40
                 </h3>
 
                 <p className="text-white/70 mt-2">

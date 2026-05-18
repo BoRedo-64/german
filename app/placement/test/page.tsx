@@ -42,24 +42,84 @@ export default function PlacementTestPage() {
   useEffect(() => {
     const fetchQuestions =
       async () => {
-        const { data } =
+
+        // A1
+        const { data: a1 } =
           await supabase
             .from(
               'placement_questions'
             )
             .select('*')
+            .eq('level', 'A1')
 
-        if (!data) return
+        // A2
+        const { data: a2 } =
+          await supabase
+            .from(
+              'placement_questions'
+            )
+            .select('*')
+            .eq('level', 'A2')
 
-        const shuffled = [
-          ...data,
+        // B1
+        const { data: b1 } =
+          await supabase
+            .from(
+              'placement_questions'
+            )
+            .select('*')
+            .eq('level', 'B1')
+
+        // B2
+        const { data: b2 } =
+          await supabase
+            .from(
+              'placement_questions'
+            )
+            .select('*')
+            .eq('level', 'B2')
+
+        const selectedQuestions = [
+          ...(a1 || [])
+            .sort(
+              () =>
+                Math.random() -
+                0.5
+            )
+            .slice(0, 10),
+
+          ...(a2 || [])
+            .sort(
+              () =>
+                Math.random() -
+                0.5
+            )
+            .slice(0, 10),
+
+          ...(b1 || [])
+            .sort(
+              () =>
+                Math.random() -
+                0.5
+            )
+            .slice(0, 10),
+
+          ...(b2 || [])
+            .sort(
+              () =>
+                Math.random() -
+                0.5
+            )
+            .slice(0, 10),
         ]
-          .sort(
+
+        // FINAL SHUFFLE
+        const shuffled =
+          selectedQuestions.sort(
             () =>
               Math.random() -
               0.5
           )
-          .slice(0, 30)
 
         setQuestions(
           shuffled
