@@ -40,20 +40,14 @@ export default function PlacementResultPage() {
 
     let detected = 'A1'
 
-    if (saved >= 5)
+    if (saved >= 10)
       detected = 'A2'
 
-    if (saved >= 10)
+    if (saved >= 20)
       detected = 'B1'
 
-    if (saved >= 16)
+    if (saved >= 30)
       detected = 'B2'
-
-    if (saved >= 22)
-      detected = 'C1'
-
-    if (saved >= 27)
-      detected = 'C2'
 
     setLevel(detected)
 
